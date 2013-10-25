@@ -36,12 +36,12 @@ function searchFlickr(object, fn) {
 		if (error){
 			searchFlickr(object, fn);
 		}
-		else {
+		else if (!error){
 		     if (results.pages === 0){
 		          searchFlickr(object, fn);
 		      }
 		      else {
-			   fn(results);
+			  return fn(results);
 		      }
 		}
 	});
