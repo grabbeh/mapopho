@@ -35,12 +35,9 @@ function isEmpty(obj) {
 
 function searchFlickr(number, object, fn) {
     flickr.photos.search(object, function (error, results) {
-        if (error) {
+        if (error || results.page === 0) {
             searchFlickr(object, fn);
-        } else if (!error) {
-            if (results.pages === 0) {
-                searchFlickr(number, object, fn);
-            } else {
+        } else {
                 pictures.push(results.photo[0]);
                 if (pictures.length < number) {
                     searchFlickr(number, object, fn);
