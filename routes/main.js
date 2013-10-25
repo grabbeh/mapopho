@@ -9,11 +9,13 @@ exports.home = function(req, res){
 };
 
 exports.api = function(req, res){
+     var coords = [];
+     var pictures = [];
      randomLandBasedCoordinates(2, function(coords){ 
      	coords.forEach(function(arr){
      	    var flickrSearchOptions = new searchObject(req.body.tag, arr);
-	    searchFlickr(flickrSearchObject, function(results){
-	    	res.json(results);
+	    searchFlickr(2, flickrSearchObject, function(pictures){
+	    	res.json(pictures);
 	    });	
      	})
     })
@@ -31,17 +33,23 @@ function isEmpty(obj) {
     return true;
 }
 
-function searchFlickr(object, fn) {
+function searchFlickr(number, object, fn) {
   flickr.photos.search(object, function(error, results) {
-		if (error){
-			searchFlickr(object, fn);
+	if (error){
+		searchFlickr(object, fn);
 		}
-		else if (!error){
-		     if (results.pages === 0){
-		          searchFlickr(object, fn);
+	else if (!error){
+		 if (results.pages === 0){
+		      searchFlickr(number, object, fn);
+		      }
+		 else {
+		      pictures.push(results.photo[0]);
+		      if (pictures.length < number) {
+		      	   searchFlickr(number, object, fn);
 		      }
 		      else {
-			  return fn(results);
+		      	   return fn(results);
+		      	   }
 		      }
 		}
 	});
@@ -55,14 +63,14 @@ function randomlandBasedCoordinates(number, fn) {
 	
 	geocoder.reverseGeocode(lat, lon, function(err, results){
 	    if (status == "ZERO_RESULTS") {
-            randomLandBasedCoords(number,fn);
-        } else if (status == "OK" && results) {
-            var landCoordinate = randomCoordinate;
-            coords.push(landCoordinate);
-            if (coords.length < number) {
                 randomLandBasedCoords(number,fn);
-            } else {
-                return fn(coords);
+              } else if (status == "OK" && results) {
+                      var landCoordinate = randomCoordinate;
+                      coords.push(landCoordinate);
+                  if (coords.length < number) {
+                         randomLandBasedCoords(number,fn);
+                  } else {
+                      return fn(coords);
             }
         }
     });		
@@ -73,7 +81,7 @@ function flickrSearchOptions(obj, arr) {
 		this.lon = arr[0];
 		this.min_date_upload = 946706400;
 		this.tags = tag;
-		this.per_page = 2;
+		this.per_page = 1;
 		this.page = 1;
 	}
 
