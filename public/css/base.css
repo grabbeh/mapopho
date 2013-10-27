@@ -1,0 +1,182 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+.photo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+}
+
+.photo-list li {
+    margin: 10px 10px 10px 0;
+    float: left;
+}
+
+a img {
+    border: none;
+}
+
+.input {
+    position: relative;
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.2em;
+    padding: 10px;
+    border: 0;
+    width: 200px;
+}
+
+.button {
+    height: 40px;
+    font-size: 20px;
+    margin: 10px 0 10px 0;
+    padding: 0 10px 0 10px;
+
+}
+
+html,
+body {
+    height:100%;
+    margin: 0px auto; 
+    padding:0; 
+    font-size: 20px;
+    font-family:  'Open Sans', Arial;
+}
+
+.display-none {
+    visibility: hidden;
+}
+
+#container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.row {
+    width: 100%;
+}
+
+input {
+    font-family: 'Open Sans', Arial;
+}
+
+a {color: #000000;}
+a:link {text-decoration: none;}
+a:visited {text-decoration: none;}
+a:active {text-decoration: none;}
+
+a:hover { text-decoration: underline;}
+
+#maincontainer {
+    position:relative;
+    width:100%;   
+    min-height:100%;
+    margin:0;
+    padding:0;
+    margin-bottom: -100px;
+}
+
+.hover:hover{
+ cursor: pointer;
+}
+
+a img {
+border: none;
+margin: 0px 10px 10px 0px;
+}
+
+#header {
+    width:100%;
+    background:#0080FF;
+    height: 50px;
+}
+
+#header p {
+    padding: 10px 0 0 20px;
+    margin: 0;
+}
+
+#header a {
+  color: #FFFFFF; 
+  text-decoration: none; 
+  font-weight: bold;
+}
+
+#headerlogo {
+    float: left;
+    text-align: left;
+    padding: 10px 0 0px 20px;
+    margin: 0;
+    color: white;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+/* COLUMNS */
+
+.sixcol {
+margin-right: 3.8%;
+float: left;
+min-height: 1px;
+}
+
+.row .sixcol {
+width: 48%;
+}
+
+.row .twelvecol {
+width: 100%;
+float: left;
+}
+
+
+.last {
+margin-right: 0px;
+}
+
+
+/* MOBILE RESPONSIVE CHANGE */
+
+@media handheld, only screen and (max-width: 750px) {
+
+   #container {
+    width: 95%;
+   }
+
+   .photo-list li {
+        float: none;
+   }
+
+    body  {
+        min-width: 0;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .row {
+        width: 100%;
+        min-width: 0;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    
+    .row, .row .twelvecol {
+    width: auto;
+        float: none;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    a img {
+        width: 100%;
+     }
+
+.footer-hide {
+    display: none;
+}
+}​

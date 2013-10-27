@@ -21,11 +21,11 @@ app.configure(function(){
 
 // Routes
 
-app.get('/', routes.home);
+app.get('/', function(req, res){
+  res.sendfile(__dirname + '/public/views/index.html')
+});
 
 app.post('/flickrapi', routes.api);
-
-app.get('/privacy', routes.privacy);
 
 app.get('*', function(req, res){
   res.send('404, page not found', 404);

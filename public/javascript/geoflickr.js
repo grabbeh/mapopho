@@ -53,16 +53,10 @@ function addSubmitListener(marker) {
 }
 
 
-function ajaxLatLonPost(lat, lon) {
-    chunksarray = [];
-    collectLicenseData();
-    var tag = $('#tags').val().split(" ")
+function requestTwoPhotos(lat, lon) {
 
     var obj = {
-        lat: lat,
-        lon: lon,
-        tag: tag,
-        licenses: licenses
+        tag: "Cat"
     };
 
     $.ajax({
@@ -76,22 +70,7 @@ function ajaxLatLonPost(lat, lon) {
         },
         success: function (data, success, xhr) {
 
-            if (xhr.status === 502){
-                $('#photonumber').text("Server error - please refresh")
-            }
-            else {
-                if (xhr.status === 204){
-                    $('#photonumber').text("No results (although the app can be temperamental so you may like to try again)");
-                }
-                else { 
-                    clearImages();
-                    numberofphotos = data.photo.length;
-                    chunksarray = chunks(data.photo, 30);
-                    currentarray = 0;
-                    firstarray = chunksarray[currentarray];
-                    processFlickrData(firstarray);
-                }
-            }
+        
         }
     });
 };

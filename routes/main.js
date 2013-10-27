@@ -9,20 +9,63 @@ exports.home = function (req, res) {
 };
 
 exports.api = function (req, res) {
-    var coords = [];
-    var pictures = [];
-    randomLandBasedCoordinates(2, function (coords) {
-        coords.forEach(function (arr) {
-            var flickrSearchOptions = new searchObject(req.body.tag, arr);
-            searchFlickr(2, flickrSearchObject, function (pictures) {
-                res.json(pictures);
-            });
-        })
+    photos = [];
+    var tag = req.body.tag;
+    randomLandBasedCoordinates(tag, function (photos) {
+        console.log(photos);
+        res.json(photos);
     })
-})
+}
 
-exports.privacy = function (req, res) {
-    res.render('privacy');
+function searchFlickr(object, func) {
+    flickr.photos.search(object, function (error, results) {
+        if (error || results.photo[0] == undefined) {
+            var err = new Error("No photos");
+            return func(err);
+        } 
+        else {
+            return func(null, results.photo[0]);
+        }
+      });
+}
+
+function randomLandBasedCoordinates(tag, cb) {
+    var lat = (Math.random() * 180 - 90);
+    var lon = (Math.random() * 360 - 180);
+    var randomCoordinate = [lat, lon];
+    geocoder.reverseGeocode(lat, lon, function (err, results) {
+        if (results.status == "ZERO_RESULTS") {
+            randomLandBasedCoordinates(tag, cb);
+        } else if (results.status == "OK" && results) {
+                var landCoordinate = randomCoordinate;
+                flickrSearchOption = new flickrSearchOptions(tag, landCoordinate);
+                searchFlickr(flickrSearchOption, function (error, photo) {
+                    if (error) {
+                        randomLandBasedCoordinates(tag, cb) 
+                    }
+                    else {
+                         photo['location'] = landCoordinate;
+                         photos.push(photo);
+                          if (photos.length < 2) {
+                              randomLandBasedCoordinates(tag, cb)
+                        }
+                          else { 
+                              return cb(photos) 
+                       }
+                }
+            });
+        }
+    });
+}
+
+function flickrSearchOptions(tag, arr) {
+    this.lat = arr[0];
+    this.lon = arr[1];
+    this.min_date_upload = 946706400;
+    this.tags = tag;
+    this.per_page = 1;
+    this.page = 1;
+    this.radius = 32;
 }
 
 function isEmpty(obj) {
@@ -31,50 +74,4 @@ function isEmpty(obj) {
             return false;
     }
     return true;
-}
-
-function searchFlickr(number, object, fn) {
-    flickr.photos.search(object, function (error, results) {
-        if (error || results.page === 0) {
-            searchFlickr(object, fn);
-        } else {
-                pictures.push(results.photo[0]);
-                if (pictures.length < number) {
-                    searchFlickr(number, object, fn);
-                } else {
-                    return fn(results);
-                }
-            }
-        }
-    });
-}
-
-function randomlandBasedCoordinates(number, fn) {
-
-    var lat = (Math.random() * 180 - 90);
-    var lon = (Math.random() * 360 - 180);
-    var randomCoordinate = [lat, lon];
-
-    geocoder.reverseGeocode(lat, lon, function (err, results) {
-        if (status == "ZERO_RESULTS") {
-            randomLandBasedCoords(number, fn);
-        } else if (status == "OK" && results) {
-            var landCoordinate = randomCoordinate;
-            coords.push(landCoordinate);
-            if (coords.length < number) {
-                randomLandBasedCoords(number, fn);
-            } else {
-                return fn(coords);
-            }
-        }
-    });
-}
-
-function flickrSearchOptions(obj, arr) {
-    this.lat = arr[0];
-    this.lon = arr[0];
-    this.min_date_upload = 946706400;
-    this.tags = tag;
-    this.per_page = 1;
-    this.page = 1;
 }
