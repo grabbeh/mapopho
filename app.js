@@ -5,7 +5,9 @@ var express = require('express')
 , FlickrAPI = require('./flickrnode/lib/flickr').FlickrAPI
 , sys = require('sys')
 , api = require('./config/api.js')
-, flickr = new FlickrAPI(api.details.key);
+, flickr = new FlickrAPI(api.details.key)
+, mongoose = require('mongoose')
+, db = require('./config/db.js');
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -19,13 +21,24 @@ app.configure(function(){
 
 });
 
+mongoose.connect('mongodb://' 
+  + db.user + ':' 
+  + db.pass + '@' 
+  + db.host + ':' 
+  + db.port + '/' 
+  + db.name,
+  function(err){
+    if (err) {throw new Error(err.stack);}
+  });
+
+
 // Routes
 
 app.get('/', function(req, res){
   res.sendfile(__dirname + '/public/views/index.html')
 });
 
-app.post('/flickrapi', routes.api);
+app.post('/flickrapi', routes.requestPhotos);
 
 app.get('*', function(req, res){
   res.send('404, page not found', 404);
