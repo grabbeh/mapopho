@@ -6,7 +6,9 @@
     "geocoder": "~0.1.0",
     "mongoose": "~3.6.20",
     "cheerio": "~0.12.3",
-    "request": "~2.27.0"
+    "request": "~2.27.0",
+    "underscore": "~1.5.2",
+    "file-geocoder": "0.3.5"
   },
   "scripts": {
     "start": "app.js"

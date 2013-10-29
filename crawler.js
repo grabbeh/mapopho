@@ -2,41 +2,56 @@ var //request = require('request'),
   cheerio = require('cheerio')
 , City = require('./models/city.js')
 , geocoder = require('geocoder')
-, fs = require('fs');
+, fs = require('fs')
+, mongoose = require('mongoose')
+, db = require('./config/db.js')
+, cityarray = require('./config/cityarray.js')
+, _ = require('underscore');
 
+mongoose.connect('mongodb://' 
+  + db.user + ':' 
+  + db.pass + '@' 
+  + db.host + ':' 
+  + db.port + '/' 
+  + db.name,
+  function(err){
+    if (err) {throw new Error(err.stack);}
+  });
 
-var html = fs.readFileSync('./config/cities.html').toString();
-var $ = cheerio.load(html);
-var cities = [];
-$('tr').map(function(i, tr){
-	city = this.children().first().text();
-	geocoder.geocode(city, processGeocoderData)
+//var throttledCallbackFunction = _.throttle(processGeocoderData, 1000)
+
+returnCityArray(cityarray, function(cityobjectarray){
+	fs.writeFileSync('./config/cityobjectarray.js', cityobjectarray);
 })
 
 /*
-function processHTML(err, response, html){
-	if (err) { console.log(err)}
-    var $ = cheerio.load(html);
-	$('tr').map(function(i, tr){
-		city = this.children().first().text();
-		geocoder.geocode(city, processGeocoderData)
-	})
-}*/
-
-function processGeocoderData(err, data){
-	if (err) { console.log(err)}
-	else if (data.status == "OVER_QUERY_LIMIT" || "ZERO_RESULTS") { console.log("No results or over query limit")}
-	else {
-		location = [data.results[0].geometry.location.lat, data.results[0].geometry.location.lng];
-		    new City({
-		    	city: city, 
-		    	location: location 
-		}).save(function(err){
-		    if (err) { console.log(err)}
-		});
-	}
+function returnCityArray(cityarray, fn){
+	var cityobjectarray = [];
+	cityarray.forEach(function(city, i){
+		//console.log("Index = " + i + ", City = " + city);
+		var cityobject = {
+			city: city
+		};
+		
+		console.log(cityobject);
+		cityobjectarray.push(JSON.stringify(cityobject));
+		//setTimeout(geocoder.geocode(city, throttledCallbackFunction), 1000);
+	});
+	return fn(cityobjectarray);
 }
 
 
-//var domain = "http://www.mongabay.com/cities_pop_01.htm";
-//request(domain, processHTML);
+function processGeocoderData(err, data){
+	console.log(data);
+	if (err) { console.log(err)}
+	else if (data.status == "OVER_QUERY_LIMIT") { console.log("Over query limit")}
+	else  {
+		var location = [data.results[0].geometry.location.lat, 
+		                data.results[0].geometry.location.lng];
+		new City({
+			city: data.results[0].formatted_address, 
+			location: location 
+		}).save();
+	}
+}
+
