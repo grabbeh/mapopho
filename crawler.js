@@ -5,9 +5,9 @@ var //request = require('request'),
 , fs = require('fs')
 , mongoose = require('mongoose')
 , db = require('./config/db.js')
-, cityarray = require('./config/cityarray.js')
+, cityarray = require('./cityarray.js')
 , _ = require('underscore');
-
+/*
 mongoose.connect('mongodb://' 
   + db.user + ':' 
   + db.pass + '@' 
@@ -19,18 +19,17 @@ mongoose.connect('mongodb://'
   });
 
 //var throttledCallbackFunction = _.throttle(processGeocoderData, 1000)
-
+*/
 returnCityArray(cityarray, function(cityobjectarray){
-	fs.writeFileSync('./config/cityobjectarray.js', cityobjectarray);
+	fs.writeFileSync('./config/cityobjectarray.json', cityobjectarray);
 })
 
-/*
 function returnCityArray(cityarray, fn){
 	var cityobjectarray = [];
 	cityarray.forEach(function(city, i){
 		//console.log("Index = " + i + ", City = " + city);
 		var cityobject = {
-			city: city
+			address: city
 		};
 		
 		console.log(cityobject);
