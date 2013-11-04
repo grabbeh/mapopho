@@ -5,9 +5,9 @@ var //request = require('request'),
 , fs = require('fs')
 , mongoose = require('mongoose')
 , db = require('./config/db.js')
-, cityarray = require('./cityarray.js')
+, cityarray = require('./config/cities.json')
 , _ = require('underscore');
-/*
+
 mongoose.connect('mongodb://' 
   + db.user + ':' 
   + db.pass + '@' 
@@ -18,27 +18,29 @@ mongoose.connect('mongodb://'
     if (err) {throw new Error(err.stack);}
   });
 
-//var throttledCallbackFunction = _.throttle(processGeocoderData, 1000)
-*/
-returnCityArray(cityarray, function(cityobjectarray){
-	fs.writeFileSync('./config/cityobjectarray.json', cityobjectarray);
+
+createBriefArray(cityarray, function(cities){
+
+	fs.writeFile('./config/basiccities.json', cities, function(err){
+		
+	})
 })
 
-function returnCityArray(cityarray, fn){
-	var cityobjectarray = [];
-	cityarray.forEach(function(city, i){
-		//console.log("Index = " + i + ", City = " + city);
-		var cityobject = {
-			address: city
-		};
-		
-		console.log(cityobject);
-		cityobjectarray.push(JSON.stringify(cityobject));
-		//setTimeout(geocoder.geocode(city, throttledCallbackFunction), 1000);
-	});
-	return fn(cityobjectarray);
-}
 
+function createBriefArray(cityarray, fn){
+	cities = [];
+	cityarray.forEach(function(item){
+		var city = {
+			location: item.address,
+			lat: item.GeocodeLat,
+			lng: item.GeocodeLng
+		}
+        cities.push(city);
+
+	})
+	cities = JSON.stringify(cities);
+	return fn(cities)
+}
 
 function processGeocoderData(err, data){
 	console.log(data);
