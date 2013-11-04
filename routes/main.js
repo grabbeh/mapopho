@@ -6,7 +6,7 @@ var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
     Coordinate = require('../models/coordinate.js'),
     Photo = require('../models/photo.js'),
     cityarray = require('../config/basiccities.json');
-    
+
 exports.home = function (req, res) {
     res.render('home');
 };
@@ -41,50 +41,30 @@ function searchFlickr(object, func) {
 }
 
 function randomLandBasedCoordinates(tag, cb) {
-    var lat = (Math.random() * 180 - 90).toFixed(2);
-    var lon = (Math.random()* 360 - 180).toFixed(2);
-    var randomCoordinate = [lat, lon];
-    console.log(randomCoordinate);
-    var randomCoordinateTwo = [lon, lat];
-    geocoder.reverseGeocode(lat, lon, function (err, results) {
-        if (results.status == "ZERO_RESULTS") {
-            randomLandBasedCoordinates(tag, cb);
-        } 
+    
+    var cityindex = Math.floor((Math.random() * cityarray.length));
+    var place = cityarray[cityindex];
+    var landCoordinate = [place.lat, place.lng];
 
-        else if (results.status == "OVER_QUERY_LIMIT" ){
-            var err = new Error("Query limit exceeded");
-            cb(err);
-        }
-        else if (results.status == "OK" && results) {
-
-            new Coordinate({
-                coordinate: randomCoordinate, 
-                coordinateTwo: randomCoordinateTwo
-                }).save(function(){
-                    var landCoordinate = randomCoordinate;
-                    var landCoordinateTwo = randomCoordinateTwo;
-                    flickrSearchOption = new flickrSearchOptions(tag, landCoordinate);
-                    searchFlickr(flickrSearchOption, function (error, photo) {
-                        if (error) {
-                            randomLandBasedCoordinates(tag, cb) 
-                        }
-                        else {
-                             photo['location'] = landCoordinate;
-                             photo['locationTwo'] = landCoordinateTwo;
-                             photo['tag'] = tag;
-                             photos.push(photo);
-                              if (photos.length < 2) {
-                                  randomLandBasedCoordinates(tag, cb)
-                            }
-                              else { 
-                                  return cb(null, photos) 
-                           }
-                        }
-                    });
-                })
+    flickrSearchOption = new flickrSearchOptions(tag, landCoordinate);
+    searchFlickr(flickrSearchOption, function (error, photo) {
+        if (error) {
+            randomLandBasedCoordinates(tag, cb) 
             }
-        });
-    }
+            else {
+                photo['location'] = landCoordinate;
+                photo['tag'] = tag;
+                photos.push(photo);
+                    if (photos.length < 2) {
+                        randomLandBasedCoordinates(tag, cb)
+                    }
+                    else { 
+                        return cb(null, photos) 
+                        }
+                    }
+                });
+            }
+
 
 function flickrSearchOptions(tag, arr) {
     this.lat = arr[0];
