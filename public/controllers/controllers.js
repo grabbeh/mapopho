@@ -29,7 +29,7 @@ appModule
 
             $scope.voteOnPhoto = function(photo){
                 $scope.photos = false;
-                $scope.photos = true;
+                $scope.loading = true;
                 var postData = {
                     photo: photo,
                     tag: $scope.tag
