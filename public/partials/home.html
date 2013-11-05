@@ -11,9 +11,8 @@
   <div class="row">
     <div ng-show="loading">Loading...</div>
     <ul class="photo-list" ng-show="photos">
-      <li ng-repeat="photo in photos">
-          <a target="_blank" ng-href="http://flickr.com/photo.gne?id={{photo.id}}"><img ng-src="http://farm{{photo.farm}}.staticflickr.com/{{photo.server}}/{{photo.id}}_{{photo.secret}}.jpg"/></a>
-
+      <li ng-click="voteOnPhoto(photo)" ng-repeat="photo in photos">
+          <img ng-src="http://farm{{photo.farm}}.staticflickr.com/{{photo.server}}/{{photo.id}}_{{photo.secret}}.jpg"/>
       </li>
     </ul>
   </div>

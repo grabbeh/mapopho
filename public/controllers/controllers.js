@@ -14,21 +14,31 @@ appModule.config(['$routeProvider', function($routeProvider){
 appModule
     .controller('homeController', ['$scope', '$http', 
         function ($scope, $http) {
-            $scope.tag = "";
+
             $scope.loading = false;
+
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
                 $scope.loading = true;
-                console.log("Func called");
-                var postdata = {
-                    tag: $scope.tag
-                }
-                $http.post('/flickrapi', postdata)
+                $http.post('/flickrapi', { tag: $scope.tag })
                    .success(function(data){
                       $scope.loading = false;
-                      console.log(data);
                       $scope.photos = data;
                 })
+            }
+
+            $scope.voteOnPhoto = function(photo){
+                $scope.photos = false;
+                $scope.photos = true;
+                var postData = {
+                    photo: photo,
+                    tag: $scope.tag
+                }
+                $http.post('/voteOnPhoto', postData)
+                   .success(function(data){
+                       $scope.loading = false;
+                       $scope.photos = data;
+                   })
 
             }
         }])

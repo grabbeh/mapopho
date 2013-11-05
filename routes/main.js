@@ -3,7 +3,6 @@ var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
     api = require('../config/api.js'),
     flickr = new FlickrAPI(api.details.key),
     geocoder = require('geocoder'),
-    Coordinate = require('../models/coordinate.js'),
     Photo = require('../models/photo.js'),
     cityarray = require('../config/basiccities.json');
 
@@ -12,17 +11,18 @@ exports.home = function (req, res) {
 };
 
 exports.requestPhotos = function (req, res) {
+    requestPhotos(req, res);
+}
+
+function requestPhotos(req, res) {
     photos = [];
     var tag = req.body.tag;
-    randomLandBasedCoordinates(tag, function (error, photos) {
+    getPhotosFromFlickr(tag, 2, function (error, photos) {
         if (error){
             res.status(401).send({message: "Quota exceeded"})
         }
         else {
             res.json(photos);
-            photos.forEach(function(photo){
-                savePhoto(photo);
-            })
         }
     })
 }
@@ -40,8 +40,7 @@ function searchFlickr(object, func) {
     });
 }
 
-function randomLandBasedCoordinates(tag, cb) {
-    
+function getPhotosFromFlickr(tag, number, cb) {
     var cityindex = Math.floor((Math.random() * cityarray.length));
     var place = cityarray[cityindex];
     var landCoordinate = [place.lat, place.lng];
@@ -49,14 +48,15 @@ function randomLandBasedCoordinates(tag, cb) {
     flickrSearchOption = new flickrSearchOptions(tag, landCoordinate);
     searchFlickr(flickrSearchOption, function (error, photo) {
         if (error) {
-            randomLandBasedCoordinates(tag, cb) 
+            getPhotosFromFlickr(tag, number, cb) 
             }
             else {
                 photo['location'] = landCoordinate;
                 photo['tag'] = tag;
+                photo['description'] = false;
                 photos.push(photo);
-                    if (photos.length < 2) {
-                        randomLandBasedCoordinates(tag, cb)
+                    if (photos.length < number) {
+                        getPhotosFromFlickr(tag, number, cb)
                     }
                     else { 
                         return cb(null, photos) 
@@ -64,7 +64,6 @@ function randomLandBasedCoordinates(tag, cb) {
                     }
                 });
             }
-
 
 function flickrSearchOptions(tag, arr) {
     this.lat = arr[0];
@@ -76,7 +75,7 @@ function flickrSearchOptions(tag, arr) {
     this.radius = 5;
 }
 
-function savePhoto(obj, fn){
+function saveVotedPhoto(obj, fn){
     new Photo({
         location: obj.location,
         locationTwo: obj.locationTwo,
@@ -85,12 +84,10 @@ function savePhoto(obj, fn){
         farm: obj.farm,
         secret: obj.secret,
         server: obj.server,
-        isVoted: false,
-        votes: 0
+        isVoted: true,
+        votes: 1
     }).save(fn);
 }
-
-
 
 function isEmpty(obj) {
     for (var key in obj) {
@@ -98,4 +95,21 @@ function isEmpty(obj) {
             return false;
     }
     return true;
+}
+
+exports.voteOnPhoto = function(req, res){
+    photoid = req.body.photo.id;
+    Photo.findOne({id: photoid}, function(err, photo){
+        if (err || !photo) { 
+            saveVotedPhoto(req.body.photo, function(err, photo){
+                requestPhotos(req, res);
+            });
+        }
+        else { 
+            votes = req.body.photo.votes + 1;
+            photo.update({votes: votes}, function(){
+                requestPhotos(req, res);
+            })
+        }
+    }) 
 }

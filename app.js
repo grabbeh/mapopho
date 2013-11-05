@@ -38,6 +38,8 @@ app.get('/', function(req, res){
 
 app.post('/flickrapi', routes.requestPhotos);
 
+app.post('/voteOnPhoto', routes.voteOnPhoto);
+
 app.get('*', function(req, res){
   res.send('404, page not found', 404);
 });
