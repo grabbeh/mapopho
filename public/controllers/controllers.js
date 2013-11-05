@@ -39,7 +39,6 @@ appModule
                        $scope.loading = false;
                        $scope.photos = data;
                    })
-
             }
         }])
 

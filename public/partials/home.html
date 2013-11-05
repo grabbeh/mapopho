@@ -1,21 +1,19 @@
 <div id="maincontainer">
   <div id="container">
-  <div class="row">
-    <div class="twelvecol">
+
       <form ng-submit="requestTwoPhotos()">
         <input class="input" placeholder="Tag" ng-model="tag">
         <input type="submit" class="button" value="Search">
       </form>
-  </div>
-</div>
-  <div class="row">
+
     <div ng-show="loading">Loading...</div>
     <ul class="photo-list" ng-show="photos">
       <li ng-repeat="photo in photos">
           <span><img ng-click="voteOnPhoto(photo)" ng-src="http://farm{{photo.farm}}.staticflickr.com/{{photo.server}}/{{photo.id}}_{{photo.secret}}.jpg"/></span>
-          <span style="float: left"><a ng-href="http://flickr.com/photo.gne?id={{photo.id}}">View on Flickr</a></span>
+          <span><a target="_blank" ng-href="http://flickr.com/photo.gne?id={{photo.id}}">View on Flickr</a></span>
       </li>
     </ul>
-  </div>
+
 </div>
 </div>
+
