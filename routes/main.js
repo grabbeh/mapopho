@@ -113,3 +113,18 @@ exports.voteOnPhoto = function(req, res){
         }
     }) 
 }
+
+exports.getPhotosForMap = function(req, res){
+    Photo.find({tag: req.body.tag}, function(err, photos){
+        if (!err) { 
+            locations = {};
+            photos.forEach(function(photo){
+               var location = {};
+               location["lat"] = photo.location[0];
+               location["lng"] = photo.location[1];
+               locations[photo.id] = location;
+            })
+            res.json(locations)
+        };
+    })
+}

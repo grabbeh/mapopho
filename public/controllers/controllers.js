@@ -1,10 +1,14 @@
-var appModule = angular.module('appModule', []);
+var appModule = angular.module('appModule', ["leaflet-directive"]);
 
 appModule.config(['$routeProvider', function($routeProvider){
     $routeProvider.
         when('/', {
             templateUrl: '/partials/home.html',
             controller: 'homeController'
+        }).
+        when('/map', {
+            templateUrl: '/partials/map.html',
+            controller: 'mapController'
         }).
         otherwise({
             redirectTo: '/'
@@ -41,6 +45,28 @@ appModule
                    })
             }
         }])
+
+appModule.controller("mapController", ['$scope', '$http', function($scope, $http) {
+    $scope.markers = {};
+
+    $scope.getPhotosForMap = function(){
+          $http.post('/getPhotosForMap', {tag: $scope.tag})
+            .success(function(data){
+                $scope.markers = data;
+            })
+          }
+
+    angular.extend($scope, {
+        center: {
+            lat: 59.91,
+            lng: 10.75,
+            zoom: 2
+        },
+        defaults: {
+            scrollWheelZoom: false
+        }
+    });
+}]);
 
 
 
