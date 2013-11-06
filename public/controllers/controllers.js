@@ -26,16 +26,17 @@ appModule.config(['$routeProvider', function($routeProvider){
 appModule
     .controller('homeController', ['$scope', '$routeParams', '$http', 
         function ($scope, $routeParams, $http) {
+        $scope.loading = false;
 
-        if ($routeParams){
-                $scope.photos = false;
-                $scope.loading = true;
-                $http.post('/flickrapi', { tag: $routeParams.tag })
-                   .success(function(data){
-                      $scope.loading = false;
-                      $scope.photos = data;
-                   })
-                }
+        if ($routeParams.tag){
+            $scope.loading = true;
+            $scope.photos = false;
+            $http.post('/flickrapi', { tag: $routeParams.tag })
+                .success(function(data){
+                    $scope.loading = false;
+                    $scope.photos = data;
+                 })
+              }
 
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
