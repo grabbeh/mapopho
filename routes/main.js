@@ -54,6 +54,7 @@ function getPhotosFromFlickr(tag, number, cb) {
                 photo['location'] = landCoordinate;
                 photo['tag'] = tag;
                 photo['description'] = false;
+                photo['_id'] = false;
                 photos.push(photo);
                     if (photos.length < number) {
                         getPhotosFromFlickr(tag, number, cb)
