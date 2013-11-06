@@ -58,8 +58,8 @@ appModule.controller("mapController", ['$scope', '$http', function($scope, $http
 
     angular.extend($scope, {
         center: {
-            lat: 59.91,
-            lng: 10.75,
+            lat: 33.380999,
+            lng: 31.289063,
             zoom: 2
         },
         defaults: {
