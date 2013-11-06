@@ -2,7 +2,11 @@ var appModule = angular.module('appModule', ["leaflet-directive"]);
 
 appModule.config(['$routeProvider', function($routeProvider){
     $routeProvider.
-        when('/', {
+        when('/show', {
+            templateUrl: '/partials/home.html',
+            controller: 'homeController'
+        }).
+        when('/show/:tag', {
             templateUrl: '/partials/home.html',
             controller: 'homeController'
         }).
@@ -20,8 +24,18 @@ appModule.config(['$routeProvider', function($routeProvider){
 }]);
 
 appModule
-    .controller('homeController', ['$scope', '$http', 
-        function ($scope, $http) {
+    .controller('homeController', ['$scope', '$routeParams', '$http', 
+        function ($scope, $routeParams, $http) {
+
+        if ($routeParams){
+             $scope.photos = false;
+                $scope.loading = true;
+                $http.post('/flickrapi', { tag: $routeParams.tag })
+                   .success(function(data){
+                      $scope.loading = false;
+                      $scope.photos = data;
+                })
+        }
 
             $scope.loading = false;
 
