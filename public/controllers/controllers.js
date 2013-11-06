@@ -40,7 +40,7 @@ appModule
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
                 $scope.loading = true;
-                $http.post('/flickrapi', { tag: $scope.tag })
+                $http.post('/flickrapi', { tag: $scope.tag || $routeParams.tag })
                    .success(function(data){
                       $scope.loading = false;
                       $scope.photos = data;
