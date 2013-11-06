@@ -101,7 +101,7 @@ exports.voteOnPhoto = function(req, res){
     photoid = req.body.photo.id;
     Photo.findOne({id: photoid}, function(err, photo){
         if (err || !photo) { 
-            saveVotedPhoto(req.body.photo, function(err, photo){
+            saveVotedPhoto(req.body.photo, function(){
                 requestPhotos(req, res);
             });
         }
