@@ -29,6 +29,7 @@ appModule
         $scope.loading = false;
 
         if ($routeParams.tag){
+            $scope.tag = $routeParams.tag;
             $scope.loading = true;
             $scope.photos = false;
             $http.post('/flickrapi', { tag: $routeParams.tag })
