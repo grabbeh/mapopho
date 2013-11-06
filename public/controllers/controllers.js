@@ -28,17 +28,17 @@ appModule
         function ($scope, $routeParams, $http) {
 
         if ($routeParams){
-             $scope.photos = false;
+                $scope.photos = false;
                 $scope.loading = true;
                 $http.post('/flickrapi', { tag: $routeParams.tag })
                    .success(function(data){
                       $scope.loading = false;
                       $scope.photos = data;
-                })
-        }
-
+                   })
+                }
+          else {
             $scope.loading = false;
-
+            }
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
                 $scope.loading = true;
