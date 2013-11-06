@@ -10,6 +10,10 @@ appModule.config(['$routeProvider', function($routeProvider){
             templateUrl: '/partials/map.html',
             controller: 'mapController'
         }).
+        when('/map/:tag', {
+            templateUrl: '/partials/map.html',
+            controller: 'mapController'
+        }).
         otherwise({
             redirectTo: '/'
     });
@@ -46,11 +50,18 @@ appModule
             }
         }])
 
-appModule.controller("mapController", ['$scope', '$http', function($scope, $http) {
+appModule.controller("mapController", ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
     $scope.markers = {};
 
+    if ($routeParams) {
+      $http.post('/getPhotosForMap', {tag: $routeParams.tag })
+            .success(function(data){
+                $scope.markers = data;
+            })
+    }
+
     $scope.getPhotosForMap = function(){
-          $http.post('/getPhotosForMap', {tag: $scope.tag})
+          $http.post('/getPhotosForMap', {tag: $scope.tag })
             .success(function(data){
                 $scope.markers = data;
             })
@@ -67,6 +78,8 @@ appModule.controller("mapController", ['$scope', '$http', function($scope, $http
         }
     });
 }]);
+
+
 
 
 
