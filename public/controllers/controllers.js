@@ -36,9 +36,7 @@ appModule
                       $scope.photos = data;
                    })
                 }
-          else {
-            $scope.loading = false;
-            }
+
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
                 $scope.loading = true;
