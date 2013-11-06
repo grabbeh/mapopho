@@ -52,7 +52,7 @@ appModule
                 $scope.loading = true;
                 var postData = {
                     photo: photo,
-                    tag: $scope.tag
+                    tag: $scope.tag || $routeParams.tag
                 }
                 $http.post('/voteOnPhoto', postData)
                    .success(function(data){
