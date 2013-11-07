@@ -122,11 +122,12 @@ margin: 0px 10px 10px 0px;
 }
 
 .image-holder {
-    position: absolute;
+    position: relative;
 }
 
 .image-holder img {
     position: absolute;
+    
 }
 
 .flickr-link:hover {
@@ -155,6 +156,7 @@ margin: 0px 10px 10px 0px;
 
 .image-holder {
     position: relative;
+
 }
 
 .image-holder img {
