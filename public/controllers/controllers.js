@@ -61,8 +61,8 @@ appModule
                        $scope.loading = false;
                        $scope.photos = data;
                    })
-            }
-        }])
+                }
+            }])
 
 appModule.controller("mapController", ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
     $scope.markers = {};
