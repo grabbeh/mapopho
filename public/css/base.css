@@ -8,7 +8,7 @@
 
 .photo-list li {
     margin: 10px 10px 10px 0;
-    float: left;
+    display:inline-block;
     width: 48%;
     height: 500px;
 }
@@ -20,11 +20,10 @@ img {
 
 .input {
     position: relative;
-    margin: 0;
+    margin: 10px 0 0 0;
     font-size: 20px;
     line-height: 1.2em;
-    padding: 10px;
-    border: 0;
+    padding: 5px;
     width: 200px;
 }
 
@@ -160,7 +159,7 @@ margin: 0px 10px 10px 0px;
    }
 
    .photo-list li {
-        float: none;
+        display: block;
         width: 100%;
    }
 
