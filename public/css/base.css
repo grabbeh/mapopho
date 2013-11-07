@@ -127,7 +127,6 @@ margin: 0px 10px 10px 0px;
 
 .image-holder img {
     position: absolute;
-    
 }
 
 .flickr-link:hover {
@@ -153,15 +152,6 @@ margin: 0px 10px 10px 0px;
 /* MOBILE RESPONSIVE CHANGE */
 
 @media handheld, only screen and (max-width: 750px) {
-
-.image-holder {
-    position: relative;
-
-}
-
-.image-holder img {
-    position: relative;
-}
 
 
    #container {
