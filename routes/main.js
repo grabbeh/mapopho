@@ -120,9 +120,13 @@ exports.getPhotosForMap = function(req, res){
         if (!err) { 
             locations = {};
             photos.forEach(function(photo){
+               var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg"
+               var imgsrc = "<img src=" + pictureurl + "/>"
+
                var location = {};
                location["lat"] = photo.location[0];
                location["lng"] = photo.location[1];
+               location["message"] = imgsrc;
                locations[photo.id] = location;
             })
             res.json(locations)
