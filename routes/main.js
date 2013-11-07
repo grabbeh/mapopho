@@ -123,11 +123,12 @@ exports.getPhotosForMap = function(req, res){
                var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg"
 
                var imgsrc = "<img src=" + "'" + pictureurl + "'" + "/>"
-
+               var link = "http://flickr.com/photo.gne?id=" + photo.id + "/";
+               var fulllink = "<a target='_blank' href=" + link + ">" + imgsrc + '</a>';
                var location = {};
                location["lat"] = photo.location[0];
                location["lng"] = photo.location[1];
-               location["message"] = imgsrc;
+               location["message"] = fulllink;
                locations[photo.id] = location;
             })
             res.json(locations)
