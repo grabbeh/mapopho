@@ -13,6 +13,10 @@
     height: 500px;
 }
 
+.photo-list li:last-of-type {
+    margin: 10px 0  10px 0;
+}
+
 img {
     border: none;
     width: 100%;
