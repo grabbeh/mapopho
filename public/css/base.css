@@ -160,6 +160,10 @@ img {
         width: 100%;
    }
 
+   .photo-list li:last-of-type {
+       margin-bottom: 40px;
+   }
+
     body  {
         min-width: 0;
         margin-left: 0px;
