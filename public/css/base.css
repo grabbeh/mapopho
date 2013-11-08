@@ -158,7 +158,6 @@ img {
    .photo-list li {
         display: block;
         width: 100%;
-        position: relative;
    }
 
     body  {
@@ -169,23 +168,7 @@ img {
         padding-right: 0px;
     }
 
-    .row {
-        width: 100%;
-        min-width: 0;
-        margin-left: 0px;
-        margin-right: 0px;
-        padding-left: 0px;
-        padding-right: 0px;
-    }
     
-    .row, .row .twelvecol {
-    width: auto;
-        float: none;
-        margin-left: 0px;
-        margin-right: 0px;
-        padding-left: 0px;
-        padding-right: 0px;
-    }
     a img {
         width: 100%;
      }
