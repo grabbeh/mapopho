@@ -1,4 +1,4 @@
-var appModule = angular.module('appModule', ["leaflet-directive"]);
+var appModule = angular.module('appModule', []);
 
 appModule.config(['$routeProvider', function($routeProvider){
     $routeProvider.
@@ -81,19 +81,36 @@ appModule.controller("mapController", ['$scope', '$routeParams', '$http', functi
             })
           }
 
-    angular.extend($scope, {
-        center: {
-            lat: 33.380999,
-            lng: 31.289063,
-            zoom: 2
-        },
-        defaults: {
-            scrollWheelZoom: false
-        }
-    });
 }]);
 
+appModule.directive('map', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        template: '<div></div>',
+        link: function(scope, element, attrs) {
+            var map = L.map(attrs.id, {
+                center: [33, 31],
+                zoom: 2
 
+            });
+            //create a CloudMade tile layer and add it to the map
+            L.tileLayer('http://{s}.tile.cloudmade.com/57cbb6ca8cac418dbb1a402586df4528/997/256/{z}/{x}/{y}.png', {
+                maxZoom: 18
+            }).addTo(map);
+
+            function updatePoints(pts) {
+               for (var p in pts) {
+                  L.marker([pts[p].lat, pts[p].lng]).addTo(map).bindPopup(pts[p].message);
+               }
+            }
+
+            scope.$watch(attrs.markers, function(value) {
+               updatePoints(value);
+            });
+        }
+    };
+});
 
 
 
