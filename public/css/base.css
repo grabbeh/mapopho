@@ -97,13 +97,14 @@ margin: 0px 10px 10px 0px;
 }
 
 .photo-list li {
-    margin: 10px 10px 10px 0;
+    margin: 10px 25px 15px 0;
     float: left;
     width: 48%;
 }
 
 .photo-list li:last-of-type {
-    margin: 10px 0  10px 0;
+    margin: 10px 0 25px 0;
+    padding-bottom: 25px;
 }
 
 img {
@@ -160,9 +161,6 @@ img {
         width: 100%;
    }
 
-   .photo-list li:last-of-type {
-       margin-bottom: 40px;
-   }
 
     body  {
         min-width: 0;

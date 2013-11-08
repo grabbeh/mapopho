@@ -22,6 +22,16 @@ function requestPhotos(req, res) {
             res.status(401).send({message: "Quota exceeded"})
         }
         else {
+            photos.forEach(function(p){
+                Photo.findOne({id: p.id}, function(err, photo){
+
+                    if (err || !photo){ saveNewPhoto(p) }
+
+                    else { appearances = photo.appearances + 1;
+                           photo.update({appearances:appearances})
+                    }
+                })
+            })
             res.json(photos);
         }
     })
@@ -76,17 +86,18 @@ function flickrSearchOptions(tag, arr) {
     this.radius = 5;
 }
 
-function saveVotedPhoto(obj, fn){
+function saveNewPhoto(o, fn){
     new Photo({
-        location: obj.location,
-        locationTwo: obj.locationTwo,
-        tag: obj.tag,
-        id: obj.id,
-        farm: obj.farm,
-        secret: obj.secret,
-        server: obj.server,
-        isVoted: true,
-        votes: 1
+        location: o.location,
+        locationTwo: o.locationTwo,
+        tag: o.tag,
+        id: o.id,
+        farm: o.farm,
+        secret: o.secret,
+        server: o.server,
+        isVoted: false,
+        votes: 0,
+        appearances: 1
     }).save(fn);
 }
 
@@ -99,29 +110,24 @@ function isEmpty(obj) {
 }
 
 exports.voteOnPhoto = function(req, res){
-    photoid = req.body.photo.id;
-    Photo.findOne({id: photoid}, function(err, photo){
-        if (err || !photo) { 
-            saveVotedPhoto(req.body.photo, function(){
-                requestPhotos(req, res);
-            });
-        }
-        else { 
-            votes = req.body.photo.votes + 1;
+    console.log(req.body)
+    Photo.findOne({id: req.body.photo.id}, function(err, photo){
+        var votes = photo.votes + 1;
+        photo.update({isVoted: true}, function(){
             photo.update({votes: votes}, function(){
                 requestPhotos(req, res);
-            })
-        }
-    }) 
+            });
+        });
+        
+    })  
 }
 
 exports.getPhotosForMap = function(req, res){
-    Photo.find({tag: req.body.tag}, function(err, photos){
+    Photo.find({tag: req.body.tag, isVoted: true}, function(err, photos){
         if (!err) { 
             locations = {};
             photos.forEach(function(photo){
-               var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg"
-
+               var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
                var imgsrc = "<img src=" + "'" + pictureurl + "'" + "/>"
                var link = "http://flickr.com/photo.gne?id=" + photo.id + "/";
                var fulllink = "<a target='_blank' href=" + link + ">" + imgsrc + '</a>';

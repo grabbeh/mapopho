@@ -11,7 +11,8 @@ var photoSchema = new Schema({
     secret: String,
     server: String,
     isVoted: Boolean,
-    votes: Number
+    votes: Number,
+    appearances: Number
 });
 
 module.exports = mongoose.model('Photo', photoSchema);
