@@ -89,11 +89,6 @@ margin: 0px 10px 10px 0px;
     height: 50px;
 }
 
-#header p {
-    padding: 10px 0 0 20px;
-    margin: 0;
-}
-
 #header a {
   color: #FFFFFF; 
   text-decoration: none; 
@@ -101,13 +96,13 @@ margin: 0px 10px 10px 0px;
 }
 
 #headerlogo {
-    float: left;
-    text-align: left;
-    padding: 10px 0 0px 20px;
-    margin: 0 0 0 35px;
+    
+    padding: 10px 0 0 0;
+    margin: 0 auto;
     color: white;
     font-weight: bold;
     font-size: 22px;
+    width: 90%;
 }
 
 /* main page */
@@ -198,9 +193,7 @@ margin: 0px 10px 10px 0px;
 }
 
 #headerlogo {
-    
-    margin: 0;
-    
+    width: 95%;
 }
 
 }​
