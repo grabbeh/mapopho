@@ -12,7 +12,8 @@ var photoSchema = new Schema({
     server: String,
     isVoted: Boolean,
     votes: Number,
-    appearances: Number
+    appearances: Number,
+    notTag: Boolean
 });
 
 module.exports = mongoose.model('Photo', photoSchema);

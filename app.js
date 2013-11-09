@@ -36,7 +36,9 @@ app.get('/', function(req, res){
   res.sendfile(__dirname + '/public/views/index.html')
 });
 
-app.post('/flickrapi', routes.requestPhotos);
+app.post('/requestTwoPhotos', routes.requestTwoPhotos);
+
+app.post('/requestOnePhoto', routes.requestOnePhoto);
 
 app.post('/voteOnPhoto', routes.voteOnPhoto);
 

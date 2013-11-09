@@ -10,31 +10,49 @@ exports.home = function (req, res) {
     res.render('home');
 };
 
-exports.requestPhotos = function (req, res) {
+exports.requestTwoPhotos = function(req, res) {
     requestPhotos(req, res);
 }
+
+exports.requestOnePhoto = function(req, res) {
+    requestOnePhoto(req, res);
+}
+
+function requestOnePhoto(req, res) {
+    photos = [];
+    var tag = req.body.tag;
+    Photo.findOne({id: req.body.photo.id})
+       .update({notTag: true})
+       .exec(function(){
+            getPhotosFromFlickr(tag, 1, function(error, photos){
+                    checkIfPhotoExists(photos, function(photos){
+                        res.json(photos);
+                    })
+                })
+            })
+        }
 
 function requestPhotos(req, res) {
     photos = [];
     var tag = req.body.tag;
-    getPhotosFromFlickr(tag, 2, function (error, photos) {
-        if (error){
-            res.status(401).send({message: "Quota exceeded"})
-        }
-        else {
-            photos.forEach(function(p){
-                Photo.findOne({id: p.id}, function(err, photo){
+    getPhotosFromFlickr(tag, 2, function(error, photos) {
+        checkIfPhotoExists(photos, function(photos){
+            res.json(photos);
+        })
+    })
+}
 
-                    if (err || !photo){ saveNewPhoto(p) }
-
-                    else { appearances = photo.appearances + 1;
-                           photo.update({appearances:appearances})
+function checkIfPhotoExists(photos, fn){
+    photos.forEach(function(p){
+            Photo.findOne({id: p.id}, function(err, photo){
+                if (err || !photo){ saveNewPhoto(p) }
+                    else { 
+                        appearances = photo.appearances + 1;
+                        photo.update({appearances:appearances})
                     }
                 })
             })
-            res.json(photos);
-        }
-    })
+    fn(photos);
 }
 
 function searchFlickr(object, func) {
@@ -97,7 +115,8 @@ function saveNewPhoto(o, fn){
         server: o.server,
         isVoted: false,
         votes: 0,
-        appearances: 1
+        appearances: 1,
+        notTag: false
     }).save(fn);
 }
 

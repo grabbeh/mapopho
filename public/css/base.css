@@ -153,6 +153,22 @@ img {
     cursor:pointer;
 }
 
+.remove-photo {
+    background-image: url('../images/remove.png');
+    background-repeat:no-repeat;
+    width: 40px;
+    height: 40px;
+    float: left;
+    z-index: 100;
+    position: absolute;
+    margin-left: 100px;
+    top: 0;
+}
+
+.remove-photo:hover{
+    cursor:pointer;
+}
+
 
 /* MOBILE RESPONSIVE CHANGE */
 

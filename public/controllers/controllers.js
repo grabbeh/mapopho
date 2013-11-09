@@ -32,7 +32,7 @@ appModule
             $scope.tag = $routeParams.tag;
             $scope.loading = true;
             $scope.photos = false;
-            $http.post('/flickrapi', { tag: $routeParams.tag })
+            $http.post('/requestTwoPhotos', { tag: $routeParams.tag })
                 .success(function(data){
                     $scope.loading = false;
                     $scope.photos = data;
@@ -42,10 +42,24 @@ appModule
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
                 $scope.loading = true;
-                $http.post('/flickrapi', { tag: $scope.tag || $routeParams.tag })
+                $http.post('/requestTwoPhotos', { tag: $scope.tag || $routeParams.tag })
                    .success(function(data){
+                      
                       $scope.loading = false;
                       $scope.photos = data;
+                })
+            }
+
+            $scope.removePhoto = function(photo){
+                $scope.photos.forEach(function (p, i) {
+                    if (photo.id === p.id) {
+                        $scope.photos.splice(i, 1);
+                        $http.post('/requestOnePhoto', { tag: $scope.tag || $routeParams.tag, photo:photo })
+                            .success(function(data){
+                                $scope.loading = false;
+                                $scope.photos.push(data[0]);
+                        })
+                    }
                 })
             }
 
@@ -92,16 +106,19 @@ appModule.directive('map', function() {
             var map = L.map(attrs.id, {
                 center: [33, 31],
                 zoom: 2
-
             });
-            //create a CloudMade tile layer and add it to the map
-            L.tileLayer('http://{s}.tile.cloudmade.com/57cbb6ca8cac418dbb1a402586df4528/997/256/{z}/{x}/{y}.png', {
+            
+            L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
                 maxZoom: 18
             }).addTo(map);
 
+            var clusterer = L.markerClusterGroup();
+
             function updatePoints(pts) {
                for (var p in pts) {
-                  L.marker([pts[p].lat, pts[p].lng]).addTo(map).bindPopup(pts[p].message);
+                  var marker = L.marker([pts[p].lat, pts[p].lng]).addTo(map)
+                  marker.bindPopup(pts[p].message);
+                  clusterer.addLayer(marker);
                }
             }
 
