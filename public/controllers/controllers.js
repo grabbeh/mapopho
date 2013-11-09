@@ -116,11 +116,12 @@ appModule.directive('map', function() {
 
             function updatePoints(pts) {
                for (var p in pts) {
-                  var marker = L.marker([pts[p].lat, pts[p].lng]).addTo(map)
+                  var marker = L.marker([pts[p].lat, pts[p].lng]);
                   marker.bindPopup(pts[p].message);
                   clusterer.addLayer(marker);
                }
             }
+            map.addLayer(clusterer);
 
             scope.$watch(attrs.markers, function(value) {
                updatePoints(value);

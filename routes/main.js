@@ -141,7 +141,7 @@ exports.voteOnPhoto = function(req, res){
 }
 
 exports.getPhotosForMap = function(req, res){
-    Photo.find({tag: req.body.tag, isVoted: true}, function(err, photos){
+    Photo.find({tag: req.body.tag, isVoted: true, notTag: false}, function(err, photos){
         if (!err) { 
             locations = {};
             photos.forEach(function(photo){
