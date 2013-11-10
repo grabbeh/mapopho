@@ -47,7 +47,9 @@ appModule
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
                 $scope.loading = true;
-                $location.path('/show/' + $scope.tag)
+                $scope.apply(function(){
+                    $location.path('/show/' + $scope.tag);   
+                })
             }
 
             $scope.removePhoto = function(photo){
@@ -94,8 +96,8 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
     }
 
     $scope.getPhotosForMap = function(){
-          $location.path('/map/' + $scope.tag)
-          }
+        $location.path('/map/' + $scope.tag)
+    }
 
 }]);
 
