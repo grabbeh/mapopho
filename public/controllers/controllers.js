@@ -27,6 +27,7 @@ appModule
     .controller('homeController', ['$scope', '$location', '$routeParams', '$http', 
         function ($scope, $location, $routeParams, $http) {
         $scope.loading = false;
+        $scope.error = false;
 
         if ($routeParams.tag){
             $scope.tag = $routeParams.tag;
@@ -36,6 +37,10 @@ appModule
                 .success(function(data){
                     $scope.loading = false;
                     $scope.photos = data;
+                 })
+                .error(function(){
+                    $scope.loading = false;
+                    $scope.error = true;
                  })
               }
 
@@ -75,12 +80,16 @@ appModule
 
 appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     $scope.markers = {};
-
+    
     if ($routeParams) {
       $scope.tag = $routeParams.tag;
       $http.post('/getPhotosForMap', {tag: $routeParams.tag })
             .success(function(data){
                 $scope.markers = data;
+            })
+            .error(function(){
+                console.log("Error")
+                $scope.error = true;
             })
     }
 

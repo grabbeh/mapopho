@@ -6,7 +6,8 @@
         <input type="submit" class="button" value="Search">
       </form>
 
-    <div ng-show="loading">Loading...</div>
+    <div class="loading-message" ng-show="loading">Loading...</div>
+    <div class="error-message" ng-show="error">No response from server unfortunately</div>
     <ul class="photo-list" ng-show="photos">
       <li ng-repeat="photo in photos">
         <div class="image-holder">

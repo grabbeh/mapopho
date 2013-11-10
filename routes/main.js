@@ -151,7 +151,9 @@ exports.voteOnPhoto = function(req, res){
 
 exports.getPhotosForMap = function(req, res){
     Photo.find({tag: req.body.tag, isVoted: true, notTag: false}, function(err, photos){
-        if (!err) { 
+        if (photos[0] === undefined) { res.status(500).send() }
+        else { 
+            
             locations = {};
             photos.forEach(function(photo){
                var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";

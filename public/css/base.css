@@ -3,11 +3,12 @@
 
 .input {
     position: relative;
-    margin: 10px 10px 0 0;
+    margin: 15px 10px 0 0;
     font-size: 20px;
     line-height: 1.2em;
     padding: 5px;
-    width: 200px;
+    width: 100%;
+    max-width: 200px;
 }
 
 .button {
@@ -172,6 +173,19 @@ img {
     cursor:pointer;
 }
 
+.error-message {
+    padding: 10px;
+    margin: 10px 0 10px 0;
+    background: red;
+    color: white;
+}
+
+.loading-message {
+    padding: 10px;
+    margin: 10px 0 0 0;
+    background: green;
+    color: white;
+}
 
 /* MOBILE RESPONSIVE CHANGE */
 
@@ -198,6 +212,9 @@ img {
 
 #headerlogo {
     width: 95%;
+}
+.input {
+    width: 140px;
 }
 
 }​
