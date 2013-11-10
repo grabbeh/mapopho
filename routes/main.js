@@ -4,6 +4,7 @@ var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
     flickr = new FlickrAPI(api.details.key),
     geocoder = require('geocoder'),
     Photo = require('../models/photo.js'),
+    Query = require('../models/query.js'),
     cityarray = require('../config/basiccities.json');
 
 exports.home = function (req, res) {
@@ -21,7 +22,8 @@ exports.requestOnePhoto = function(req, res) {
 function requestOnePhoto(req, res) {
     photos = [];
     var tag = req.body.tag;
-    Photo.findOne({id: req.body.photo.id})
+    saveQuery(tag, function(){
+       Photo.findOne({id: req.body.photo.id})
        .update({notTag: true})
        .exec(function(){
             getPhotosFromFlickr(tag, 1, function(error, photos){
@@ -29,15 +31,18 @@ function requestOnePhoto(req, res) {
                         res.json(photos);
                     })
                 })
-            })
-        }
+            })  
+        })
+    }
 
 function requestPhotos(req, res) {
     photos = [];
     var tag = req.body.tag;
-    getPhotosFromFlickr(tag, 2, function(error, photos) {
-        checkIfPhotoExists(photos, function(photos){
-            res.json(photos);
+    saveQuery(tag, function(){
+        getPhotosFromFlickr(tag, 2, function(error, photos) {
+            checkIfPhotoExists(photos, function(photos){
+                res.json(photos);
+            })
         })
     })
 }
@@ -117,6 +122,12 @@ function saveNewPhoto(o, fn){
         votes: 0,
         appearances: 1,
         notTag: false
+    }).save(fn);
+}
+
+function saveQuery(tag, fn){
+    new Query({
+        query: tag.toUpperCase()
     }).save(fn);
 }
 
