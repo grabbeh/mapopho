@@ -47,7 +47,7 @@ appModule
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
                 $scope.loading = true;
-                $scope.apply(function(){
+                $scope.$apply(function(){
                     $location.path('/show/' + $scope.tag);   
                 })
             }
