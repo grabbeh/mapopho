@@ -19,7 +19,7 @@ app.configure(function(){
 
 });
 
-mongoose.connect('mongodb://' 
+var dbase = mongoose.connect('mongodb://' 
   + db.user + ':' 
   + db.pass + '@' 
   + db.host + ':' 
@@ -28,7 +28,6 @@ mongoose.connect('mongodb://'
   function(err){
     if (err) {throw new Error(err.stack);}
   });
-
 
 // Routes
 

@@ -127,6 +127,7 @@ img {
     z-index: 100;
     position: absolute;
     top: 0;
+    left: 0;
 }
 
 .image-holder {
@@ -147,6 +148,7 @@ img {
     position: absolute;
     margin-left: 50px;
     top: 0;
+    left: 0;
 }
 
 .upvote:hover {
@@ -163,6 +165,7 @@ img {
     position: absolute;
     margin-left: 100px;
     top: 0;
+    left: 0;
 }
 
 .remove-photo:hover{
