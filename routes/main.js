@@ -22,8 +22,7 @@ exports.requestOnePhoto = function(req, res) {
 function requestOnePhoto(req, res) {
     photos = [];
     var tag = req.body.tag;
-    saveQuery(tag, function(){
-       Photo.findOne({id: req.body.photo.id})
+    Photo.findOne({id: req.body.photo.id})
        .update({notTag: true})
        .exec(function(){
             getPhotosFromFlickr(tag, 1, function(error, photos){
@@ -32,8 +31,7 @@ function requestOnePhoto(req, res) {
                     })
                 })
             })  
-        })
-    }
+        }
 
 function requestPhotos(req, res) {
     photos = [];
