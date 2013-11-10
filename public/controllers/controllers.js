@@ -24,8 +24,8 @@ appModule.config(['$routeProvider', function($routeProvider){
 }]);
 
 appModule
-    .controller('homeController', ['$scope', '$routeParams', '$http', 
-        function ($scope, $routeParams, $http) {
+    .controller('homeController', ['$scope', '$location', '$routeParams', '$http', 
+        function ($scope, $location, $routeParams, $http) {
         $scope.loading = false;
 
         if ($routeParams.tag){
@@ -42,12 +42,7 @@ appModule
             $scope.requestTwoPhotos = function(){
                 $scope.photos = false;
                 $scope.loading = true;
-                $http.post('/requestTwoPhotos', { tag: $scope.tag || $routeParams.tag })
-                   .success(function(data){
-                      
-                      $scope.loading = false;
-                      $scope.photos = data;
-                })
+                $location.path('/show/' + $scope.tag)
             }
 
             $scope.removePhoto = function(photo){
@@ -78,10 +73,11 @@ appModule
                 }
             }])
 
-appModule.controller("mapController", ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     $scope.markers = {};
 
     if ($routeParams) {
+      $scope.tag = $routeParams.tag;
       $http.post('/getPhotosForMap', {tag: $routeParams.tag })
             .success(function(data){
                 $scope.markers = data;
@@ -89,10 +85,7 @@ appModule.controller("mapController", ['$scope', '$routeParams', '$http', functi
     }
 
     $scope.getPhotosForMap = function(){
-          $http.post('/getPhotosForMap', {tag: $scope.tag })
-            .success(function(data){
-                $scope.markers = data;
-            })
+          $location.path('/map/' + $scope.tag)
           }
 
 }]);
