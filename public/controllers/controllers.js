@@ -45,12 +45,28 @@ appModule
               }
 
             $scope.requestTwoPhotos = function(){
-                $scope.photos = false;
-                $scope.loading = true;
-                $scope.$apply(function(){
-                    $location.path('/show/' + $scope.tag);   
-                })
-            }
+                
+                if ($routeParams.tag !== $scope.tag) {
+                    console.log($routeParams.tag + " " + $scope.tag)
+                    $scope.photos = false;
+                    $scope.loading = true;
+                    $location.path('/show/' + $scope.tag); 
+                }
+                else {
+                    console.log("Tag same as url so requesting photo :)")
+                    $scope.loading = true;
+                    $scope.photos = false;
+                    $http.post('/requestTwoPhotos', { tag: $routeParams.tag })
+                        .success(function(data){
+                            $scope.loading = false;
+                            $scope.photos = data;
+                         })
+                        .error(function(){
+                            $scope.loading = false;
+                            $scope.error = true;
+                         })
+                    }
+                }
 
             $scope.removePhoto = function(photo){
                 $scope.photos.forEach(function (p, i) {
