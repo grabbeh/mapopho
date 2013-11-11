@@ -157,7 +157,7 @@ exports.getPhotosForMap = function(req, res){
             locations = {};
             photos.forEach(function(photo){
                var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
-               var imgsrc = "<img src=" + "'" + pictureurl + "'" + "/>"
+               var imgsrc = "<img style='padding: 0; margin: 0; width: 300px;' src=" + "'" + pictureurl + "'" + "/>"
                var link = "http://flickr.com/photo.gne?id=" + photo.id + "/";
                var fulllink = "<a target='_blank' href=" + link + ">" + imgsrc + '</a>';
                var location = {};

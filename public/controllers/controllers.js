@@ -137,7 +137,7 @@ appModule.directive('map', function() {
             function updatePoints(pts) {
                for (var p in pts) {
                   var marker = L.marker([pts[p].lat, pts[p].lng]);
-                  marker.bindPopup(pts[p].message);
+                  marker.bindPopup(pts[p].message, { maxWidth: 10000});
                   clusterer.addLayer(marker);
                }
             }
