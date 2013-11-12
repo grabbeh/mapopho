@@ -2,7 +2,6 @@ var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
     sys = require('sys'),
     api = require('../config/api.js'),
     flickr = new FlickrAPI(api.details.key),
-    geocoder = require('geocoder'),
     Photo = require('../models/photo.js'),
     Query = require('../models/query.js'),
     cityarray = require('../config/basiccities.json');
@@ -51,7 +50,9 @@ function checkIfPhotoExists(photos, fn){
                 if (err || !photo){ saveNewPhoto(p) }
                     else { 
                         appearances = photo.appearances + 1;
-                        photo.update({appearances:appearances})
+                        photo.update({appearances:appearances}, function(){
+                                
+                        })
                     }
                 })
             })

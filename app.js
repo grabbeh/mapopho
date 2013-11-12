@@ -16,10 +16,9 @@ app.configure(function(){
   app.use(express.methodOverride()); 
   app.use(express.static(__dirname + '/public'));
   app.use(app.router);
-
 });
 
-var dbase = mongoose.connect('mongodb://' 
+mongoose.connect('mongodb://' 
   + db.user + ':' 
   + db.pass + '@' 
   + db.host + ':' 
