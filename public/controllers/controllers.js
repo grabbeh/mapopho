@@ -47,13 +47,13 @@ appModule
             $scope.requestTwoPhotos = function(){
                 
                 if ($routeParams.tag !== $scope.tag) {
-                    console.log($routeParams.tag + " " + $scope.tag)
+                    $scope.error = false;
                     $scope.photos = false;
                     $scope.loading = true;
                     $location.path('/show/' + $scope.tag); 
                 }
                 else {
-                    console.log("Tag same as url so requesting photo :)")
+                    $scope.error = false;
                     $scope.loading = true;
                     $scope.photos = false;
                     $http.post('/requestTwoPhotos', { tag: $routeParams.tag })
@@ -69,6 +69,7 @@ appModule
                 }
 
             $scope.removePhoto = function(photo){
+                $scope.loading = true;
                 $scope.photos.forEach(function (p, i) {
                     if (photo.id === p.id) {
                         $scope.photos.splice(i, 1);
