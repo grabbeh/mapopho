@@ -51,7 +51,7 @@ function checkIfPhotoExists(photos, fn){
                     else { 
                         appearances = photo.appearances + 1;
                         photo.update({appearances:appearances}, function(){
-                                
+
                         })
                     }
                 })
@@ -151,10 +151,9 @@ exports.voteOnPhoto = function(req, res){
 }
 
 exports.getPhotosForMap = function(req, res){
-    Photo.find({tag: req.body.tag, isVoted: true, notTag: false}, function(err, photos){
+    Photo.find({tag: req.body.tag, isVoted: true}, function(err, photos){
         if (photos[0] === undefined) { res.status(500).send() }
         else { 
-            
             locations = {};
             photos.forEach(function(photo){
                var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
