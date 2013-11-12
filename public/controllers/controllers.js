@@ -125,12 +125,11 @@ appModule.directive('map', function() {
         link: function(scope, element, attrs) {
             var map = L.map(attrs.id, {
                 center: [33, 31],
-                zoom: 2
+                zoom: 2,
+                minZoom: 1
             });
             
-            L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
-                maxZoom: 18
-            }).addTo(map);
+            L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png').addTo(map);
 
             var clusterer = L.markerClusterGroup();
 
