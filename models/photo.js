@@ -13,7 +13,8 @@ var photoSchema = new Schema({
     isVoted: Boolean,
     votes: Number,
     appearances: Number,
-    notTag: Boolean
+    notTag: Boolean,
+    date: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Photo', photoSchema);
