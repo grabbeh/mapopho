@@ -14,7 +14,7 @@ var photoSchema = new Schema({
     votes: Number,
     appearances: Number,
     notTag: Boolean,
-    date: { type: Date, default: Date.now }
+    dateCreated: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Photo', photoSchema);
