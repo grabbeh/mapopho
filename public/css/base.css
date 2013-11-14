@@ -43,11 +43,21 @@ input {
 }
 
 .one-half-column {
-    width: 45%;
+    width: 46%;
     float: left;
     padding: 0 0 20px 20px; 
     margin: 0;
     margin-right: 20px;
+    background:#06406C;
+    color: white;
+}
+
+.one-half-column-last {
+    width: 46%;
+    float: left;
+    padding: 0 0 20px 20px; 
+    margin: 0;
+    margin-right: 0;
     background:#06406C;
     color: white;
 }
@@ -280,11 +290,7 @@ img {
 
 .one-half-column {
     float: none;
-    width: 95%;
+    width: 90%;
 }
 
-.one-third-column {
-    float: none;
-    width: 95%;
-}
 }​
