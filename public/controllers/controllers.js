@@ -2,13 +2,17 @@ var appModule = angular.module('appModule', []);
 
 appModule.config(['$routeProvider', function($routeProvider){
     $routeProvider.
-        when('/show', {
+        when('/', {
             templateUrl: '/partials/home.html',
             controller: 'homeController'
         }).
+        when('/show', {
+            templateUrl: '/partials/show.html',
+            controller: 'showController'
+        }).
         when('/show/:tag', {
-            templateUrl: '/partials/home.html',
-            controller: 'homeController'
+            templateUrl: '/partials/show.html',
+            controller: 'showController'
         }).
         when('/map', {
             templateUrl: '/partials/map.html',
@@ -24,7 +28,36 @@ appModule.config(['$routeProvider', function($routeProvider){
 }]);
 
 appModule
-    .controller('homeController', ['$scope', '$location', '$routeParams', '$http', 
+    .controller('homeController', ['$scope', '$location', 
+        function ($scope, $location) {
+
+            $scope.showPhotosForTag = function(){
+
+                if ($scope.showtag === undefined || !$scope.showtag){
+                    $scope.error = "Please provide a tag :)"
+                }
+                else {
+                   $location.path('/show/' + $scope.showtag); 
+                }
+                
+            }
+
+            $scope.showPhotosOnMap = function(){
+                if ($scope.maptag === undefined || !$scope.maptag){
+                    $scope.error = "Please provide a tag :)"
+                }
+                else {
+                $location.path('/map/' + $scope.maptag);
+            }
+            }
+
+        }])
+
+
+
+
+appModule
+    .controller('showController', ['$scope', '$location', '$routeParams', '$http', 
         function ($scope, $location, $routeParams, $http) {
         $scope.loading = false;
         $scope.error = false;

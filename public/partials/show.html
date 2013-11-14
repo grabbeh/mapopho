@@ -1,0 +1,25 @@
+<div id="maincontainer">
+  <div id="container">
+
+      <form ng-submit="requestTwoPhotos()">
+        <input class="input" placeholder="Tag" ng-model="tag">
+        <input type="submit" class="button" value="Search">
+      </form>
+
+    <div class="loading-message" ng-show="loading">Loading...</div>
+    <div class="error-message" ng-show="error">No response from server unfortunately</div>
+    <ul class="photo-list" ng-show="photos">
+      <li ng-repeat="photo in photos">
+        <div class="image-holder">
+          <img ng-click="voteOnPhoto(photo)" ng-src="http://farm{{photo.farm}}.staticflickr.com/{{photo.server}}/{{photo.id}}_{{photo.secret}}.jpg">
+          <span><a title="View photo on Flickr" class="flickr-link"target="_blank" ng-href="http://flickr.com/photo.gne?id={{photo.id}}"></a></span>
+          <span title="This photo is better than the other one" ng-click="voteOnPhoto(photo)" class="upvote"></span>
+          <span title="This photo does not contain the tag I was looking for" ng-click="removePhoto(photo)" class="remove-photo"></span>
+        </div>
+
+      </li>
+    </ul>
+
+</div>
+</div>
+

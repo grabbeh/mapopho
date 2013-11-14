@@ -45,6 +45,10 @@ function requestPhotos(req, res) {
 }
 
 function checkIfPhotoExists(photos, fn){
+
+    if (photos.length > 2){
+        photos.pop();
+    }
     photos.forEach(function(p){
             Photo.findOne({id: p.id}, function(err, photo){
                 if (err || !photo){ saveNewPhoto(p) }
@@ -152,7 +156,7 @@ exports.voteOnPhoto = function(req, res){
 
 exports.getPhotosForMap = function(req, res){
     Photo.find({tag: req.body.tag, isVoted: true}, function(err, photos){
-        if (photos[0] === undefined) { res.status(500).send() }
+        if (photos[0] === undefined || !photos) { res.status(500).send() }
         else { 
             locations = {};
             photos.forEach(function(photo){
