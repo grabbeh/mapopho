@@ -34,7 +34,7 @@ appModule
             $scope.showPhotosForTag = function(){
 
                 if ($scope.showtag === undefined || !$scope.showtag){
-                    $scope.error = "Please provide a tag :)"
+                    $scope.error = "Please provide a tag"
                 }
                 else {
                    $location.path('/show/' + $scope.showtag); 
@@ -44,7 +44,7 @@ appModule
 
             $scope.showPhotosOnMap = function(){
                 if ($scope.maptag === undefined || !$scope.maptag){
-                    $scope.error = "Please provide a tag :)"
+                    $scope.error = "Please provide a tag"
                 }
                 else {
                 $location.path('/map/' + $scope.maptag);
@@ -111,6 +111,10 @@ appModule
                                 $scope.loading = false;
                                 $scope.photos.push(data[0]);
                         })
+                        .error(function(){
+                            $scope.loading = false;
+                            $scope.error = true;
+                         })    
                     }
                 })
             }
@@ -127,6 +131,10 @@ appModule
                        $scope.loading = false;
                        $scope.photos = data;
                    })
+                   .error(function(){
+                       $scope.loading = false;
+                       $scope.error = true;
+                    })
                 }
             }])
 
