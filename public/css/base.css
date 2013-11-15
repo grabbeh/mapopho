@@ -294,6 +294,7 @@ img {
 }
 
 .one-half-column-last {
+    margin-top: 20px;
     width: 90%;
     margin-right: 0;
 }
