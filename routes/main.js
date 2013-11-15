@@ -1,6 +1,7 @@
 var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
     sys = require('sys'),
     api = require('../config/api.js'),
+    cheerio = require('cheerio'),
     flickr = new FlickrAPI(api.details.key),
     Photo = require('../models/photo.js'),
     Query = require('../models/query.js'),
@@ -54,9 +55,7 @@ function checkIfPhotoExists(photos, fn){
                 if (err || !photo){ saveNewPhoto(p) }
                     else { 
                         appearances = photo.appearances + 1;
-                        photo.update({appearances:appearances}, function(){
-
-                        })
+                        photo.update({appearances:appearances}, function(){})
                     }
                 })
             })
@@ -79,15 +78,15 @@ function searchFlickr(object, func) {
 function getPhotosFromFlickr(tag, number, cb) {
     var cityindex = Math.floor((Math.random() * cityarray.length));
     var place = cityarray[cityindex];
-    var landCoordinate = [place.lat, place.lng];
+    var coordinate = [place.lat, place.lng];
 
-    flickrSearchOption = new flickrSearchOptions(tag, landCoordinate);
+    flickrSearchOption = new flickrSearchOptions(tag, coordinate);
     searchFlickr(flickrSearchOption, function (error, photo) {
         if (error) {
             getPhotosFromFlickr(tag, number, cb) 
             }
             else {
-                photo['location'] = landCoordinate;
+                photo['location'] = coordinate;
                 photo['tag'] = tag;
                 photo['description'] = false;
                 photo['_id'] = false;
@@ -158,19 +157,43 @@ exports.getPhotosForMap = function(req, res){
     Photo.find({tag: req.body.tag, isVoted: true}, function(err, photos){
         if (photos[0] === undefined || !photos) { res.status(500).send() }
         else { 
-            locations = {};
-            photos.forEach(function(photo){
-               var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
-               var imgsrc = "<img style='padding: 0; margin: 0; width: 300px;' src=" + "'" + pictureurl + "'" + "/>"
-               var link = "http://flickr.com/photo.gne?id=" + photo.id + "/";
-               var fulllink = "<a target='_blank' href=" + link + ">" + imgsrc + '</a>';
-               var location = {};
-               location["lat"] = photo.location[0];
-               location["lng"] = photo.location[1];
-               location["message"] = fulllink;
-               locations[photo.id] = location;
+            calculateRanking(photos, function(photos){
+                transformPhotoForMap(photos, function(photos){
+                    res.json(photos);
+                });
             })
-            res.json(locations)
         };
     })
 }
+
+function calculateRanking(photos, fn){
+    photos.forEach(function(item){
+        ranking = item.votes / (Date.now() - item.dateCreated) * (item.appearances * 10000000);
+        item.ranking = ranking.toFixed(2);
+    })
+    return fn(photos);
+}
+
+function transformPhotoForMap(photos, fn){
+    locations = {};
+    $ = cheerio.load('<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><p></p>');
+    photos.forEach(function(photo){
+
+    var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
+    var flickrlink = "http://flickr.com/photo.gne?id=" + photo.id + "/";
+
+    $('a').attr('href', flickrlink);
+    $('img').attr('src', pictureurl);
+    $('p').text(photo.ranking);
+
+    var fulllink = $.html();
+    var location = {};
+    location["lat"] = photo.location[0];
+    location["lng"] = photo.location[1];
+    location["message"] = fulllink;
+    locations[photo.id] = location;
+    })
+fn(locations);
+
+}
+               

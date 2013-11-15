@@ -4,7 +4,8 @@
     "express": "3.0.x",
     "ejs": ">= 0.8.x",
     "geocoder": "~0.1.0",
-    "mongoose": "~3.6.20"
+    "mongoose": "~3.6.20",
+    "cheerio": "~0.12.4"
   },
   "scripts": {
     "start": "app.js"
