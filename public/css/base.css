@@ -293,4 +293,9 @@ img {
     width: 90%;
 }
 
+.one-half-column-last {
+    width: 90%;
+    margin-right: 0;
+}
+
 }​
