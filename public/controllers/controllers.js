@@ -134,7 +134,7 @@ appModule
                    .error(function(){
                        $scope.loading = false;
                        $scope.error = true;
-                    })
+                         })
                 }
             }])
 
