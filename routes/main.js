@@ -115,7 +115,7 @@ function saveNewPhoto(o, fn){
     new Photo({
         location: o.location,
         locationTwo: o.locationTwo,
-        tag: o.tag,
+        tag: o.tag.toLowerCase(),
         id: o.id,
         farm: o.farm,
         secret: o.secret,
@@ -129,7 +129,7 @@ function saveNewPhoto(o, fn){
 
 function saveQuery(tag, fn){
     new Query({
-        query: tag.toUpperCase()
+        query: tag.toLowerCase()
     }).save(fn);
 }
 
@@ -142,15 +142,17 @@ function isEmpty(obj) {
 }
 
 exports.voteOnPhoto = function(req, res){
+
     Photo.findOne({id: req.body.photo.id}, function(err, photo){
-        
+        if (!err){
         var votes = photo.votes + 1;
         photo.update({isVoted: true}, function(){
             photo.update({votes: votes}, function(){
                 requestPhotos(req, res);
             });
         });
-        
+        }
+        else { throw new Error(err)}
     })  
 }
 
@@ -169,7 +171,7 @@ exports.getPhotosForMap = function(req, res){
 
 function calculateRanking(photos, fn){
     photos.forEach(function(item){
-        ranking = item.votes / (Date.now() - item.dateCreated) * (item.appearances * 10000000);
+        ranking = (item.votes / (Date.now() - item.dateCreated) * item.appearances) * 10000000;
         item.ranking = ranking.toFixed(2);
     })
     return fn(photos);
