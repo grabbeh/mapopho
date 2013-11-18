@@ -179,7 +179,7 @@ function calculateRanking(photos, fn){
 
 function transformPhotoForMap(photos, fn){
     locations = {};
-    $ = cheerio.load('<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><p></p>');
+    $ = cheerio.load('<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div style="margin-top: 10px;font-weight: bold; font-size: 20px;"></div>');
     photos.forEach(function(photo){
 
     var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
@@ -187,7 +187,7 @@ function transformPhotoForMap(photos, fn){
 
     $('a').attr('href', flickrlink);
     $('img').attr('src', pictureurl);
-    $('p').text(photo.ranking);
+    $('div').text(photo.votes + ' votes / ' + photo.appearances + ' appearances');
 
     var fulllink = $.html();
     var location = {};
