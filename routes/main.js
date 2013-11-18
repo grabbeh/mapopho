@@ -182,19 +182,20 @@ function transformPhotoForMap(photos, fn){
     $ = cheerio.load('<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div style="margin-top: 10px;font-weight: bold; font-size: 20px;"></div>');
     photos.forEach(function(photo){
 
-    var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
-    var flickrlink = "http://flickr.com/photo.gne?id=" + photo.id + "/";
+        var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
+        var flickrlink = "http://flickr.com/photo.gne?id=" + photo.id + "/";
 
-    $('a').attr('href', flickrlink);
-    $('img').attr('src', pictureurl);
-    $('div').text(photo.votes + ' votes / ' + photo.appearances + ' appearances');
+        $('a').attr('href', flickrlink);
+        $('img').attr('src', pictureurl);
+        if (photo.appearances === 1) { var app = ' appearance' } else { var app = ' appearances'}
+        $('div').text(photo.votes + ' votes / ' + photo.appearances + app);
 
-    var fulllink = $.html();
-    var location = {};
-    location["lat"] = photo.location[0];
-    location["lng"] = photo.location[1];
-    location["message"] = fulllink;
-    locations[photo.id] = location;
+        var fulllink = $.html();
+        var location = {};
+        location["lat"] = photo.location[0];
+        location["lng"] = photo.location[1];
+        location["message"] = fulllink;
+        locations[photo.id] = location;
     })
 fn(locations);
 
