@@ -79,9 +79,9 @@ input {
 }
 
 .home-title {
-    margin-top: 10px;
+    
     font-weight: bold;
-    padding: 10px 0;
+    padding: 20px 0;
 }
 
 .tag-section {
@@ -106,13 +106,13 @@ input {
 .show-tag {
     padding: 10px;
     margin: 10px;
-    background: white;
+    background: red;
 }
 
 .map-tag {
     padding: 10px;
     margin: 10px;
-    background: white;
+    background: red;
 }
 
 a {color: #000000;}
