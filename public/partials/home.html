@@ -3,6 +3,7 @@
     <div>
     <div class="main-title">"Wonder no more about what part of the world has the best photos"</div>
     <div class="one-half-column">
+      <div class="home-container">
     <div class="home-title">Search photos</div>
   
     <form ng-submit="showPhotosForTag()">
@@ -11,13 +12,16 @@
       </form>
       <div class="error-message" ng-show="error">{{ error }} </div>
     </div>
+    </div>
     <div class="one-half-column-last">
+      <div class="home-container">
       <div class="home-title">Photos on Map</div>
       <form ng-submit="showPhotosOnMap()">
         <input class="input" placeholder="Tag" ng-model="maptag">
         <input type="submit" class="button" value="Search">
       </form>
       <div class="error-message" ng-show="error">{{ error }} </div>
+    </div>
     </div>
   </div>
   <div style="clear:both"></div>
