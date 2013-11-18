@@ -188,7 +188,8 @@ function transformPhotoForMap(photos, fn){
         $('a').attr('href', flickrlink);
         $('img').attr('src', pictureurl);
         if (photo.appearances === 1) { var app = ' appearance' } else { var app = ' appearances'}
-        $('div').text(photo.votes + ' votes / ' + photo.appearances + app);
+        if (photo.votes === 1) { var vot = ' vote' } else { var vot = ' votes'}
+        $('div').text(photo.votes + vot / ' + photo.appearances + app);
 
         var fulllink = $.html();
         var location = {};
