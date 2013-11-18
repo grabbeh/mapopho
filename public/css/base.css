@@ -79,7 +79,6 @@ input {
 }
 
 .home-title {
-    
     font-weight: bold;
     padding: 20px 0;
 }
@@ -100,19 +99,28 @@ input {
 }
 
 .home-tags-list li {
-    padding: 20px;
+    padding: 0;
+    margin: 0;
 }
 
 .show-tag {
     padding: 10px;
-    margin: 10px;
     background: red;
+    margin-right: 20px;
 }
 
 .map-tag {
     padding: 10px;
-    margin: 10px;
     background: red;
+}
+
+.main-tag {
+    margin-bottom: 25px;
+    margin-top: 25px;
+}
+
+.sub-tag {
+
 }
 
 a {color: #000000;}
