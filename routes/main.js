@@ -189,7 +189,7 @@ function transformPhotoForMap(photos, fn){
         $('img').attr('src', pictureurl);
         if (photo.appearances === 1) { var app = ' appearance' } else { var app = ' appearances'}
         if (photo.votes === 1) { var vot = ' vote' } else { var vot = ' votes'}
-        $('div').text(photo.votes + vot / ' + photo.appearances + app);
+        $('div').text(photo.votes + vot + '/'  + photo.appearances + app);
 
         var fulllink = $.html();
         var location = {};
