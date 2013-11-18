@@ -108,11 +108,13 @@ input {
     padding: 10px;
     background: red;
     margin-right: 20px;
+    color: white;
 }
 
 .map-tag {
     padding: 10px;
     background: red;
+    color: white;
 }
 
 .main-tag {
