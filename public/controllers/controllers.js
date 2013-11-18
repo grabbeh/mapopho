@@ -32,14 +32,12 @@ appModule
         function ($scope, $location) {
 
             $scope.showPhotosForTag = function(){
-
                 if ($scope.showtag === undefined || !$scope.showtag){
                     $scope.error = "Please provide a tag"
                 }
                 else {
                    $location.path('/show/' + $scope.showtag); 
-                }
-                
+                } 
             }
 
             $scope.showPhotosOnMap = function(){
@@ -48,13 +46,10 @@ appModule
                 }
                 else {
                 $location.path('/map/' + $scope.maptag);
-            }
+                }
             }
 
         }])
-
-
-
 
 appModule
     .controller('showController', ['$scope', '$location', '$routeParams', '$http', 
