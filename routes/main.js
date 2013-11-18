@@ -157,7 +157,7 @@ exports.voteOnPhoto = function(req, res){
 }
 
 exports.getPhotosForMap = function(req, res){
-    Photo.find({tag: req.body.tag, isVoted: true}, function(err, photos){
+    Photo.find({tag: req.body.tag.toLowerCase(), isVoted: true}, function(err, photos){
         if (photos[0] === undefined || !photos) { res.status(500).send() }
         else { 
             calculateRanking(photos, function(photos){
