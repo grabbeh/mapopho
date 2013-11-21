@@ -89,7 +89,7 @@ input {
     margin-top: 20px;
 }
 
-.map-tags {
+.tags-title {
     margin: 20px 0 0 20px;
     font-weight: bold;
 }
@@ -103,6 +103,11 @@ input {
 .home-tags-list li {
     padding: 0;
     margin: 0;
+}
+
+.instructions-title {
+    margin: 20px 0 0 20px;
+    font-weight: bold;
 }
 
 .instructions-list {
@@ -328,6 +333,9 @@ img {
     }
 
     .instructions-list {
+        margin-left: 0;
+    }
+    .instructions-title {
         margin-left: 0;
     }
 }​
