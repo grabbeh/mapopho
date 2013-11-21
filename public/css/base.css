@@ -302,7 +302,6 @@ img {
         width: 100%;
    }
 
-
     body  {
         min-width: 0;
         margin-left: 0px;
@@ -311,23 +310,24 @@ img {
         padding-right: 0px;
     }
 
-#headerlogo {
-    width: 95%;
-}
-.input {
-    width: 140px;
-}
+    #headerlogo {
+        width: 95%;
+    }
 
-.one-half-column, .one-sixth-column, .five-sixths-column {
-    float: none;
-    width: 100%;
-    
-}
+    .input {
+        width: 140px;
+    }
 
-.last { 
-    margin-top: 20px;
-}
+    .one-half-column, .one-sixth-column, .five-sixths-column {
+        float: none;
+        width: 100%;
+    }
 
+    .last { 
+        margin-top: 20px;
+    }
 
-
+    .instructions-list {
+        margin-left: 0;
+    }
 }​
