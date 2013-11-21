@@ -26,7 +26,7 @@ function requestOnePhoto(req, res) {
        .update({notTag: true})
        .exec(function(){
             getPhotosFromFlickr(tag, 1, function(error, photos){
-                    checkIfPhotoExists(photos, function(photos){
+                    checkIfPhotoExists(tag, photos, function(photos){
                         res.json(photos);
                     })
                 })
@@ -45,13 +45,13 @@ function requestPhotos(req, res) {
     })
 }
 
-function checkIfPhotoExists(photos, fn){
+function checkIfPhotoExists(tag, photos, fn){
 
     if (photos.length > 2){
         photos.pop();
     }
     photos.forEach(function(p){
-            Photo.findOne({id: p.id}, function(err, photo){
+            Photo.findOne({id: p.id, tag: tag}, function(err, photo){
                 if (err || !photo){ saveNewPhoto(p) }
                     else { 
                         appearances = photo.appearances + 1;
@@ -142,7 +142,6 @@ function isEmpty(obj) {
 }
 
 exports.voteOnPhoto = function(req, res){
-
     Photo.findOne({id: req.body.photo.id}, function(err, photo){
         if (!err){
         var votes = photo.votes + 1;
