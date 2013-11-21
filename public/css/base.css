@@ -118,7 +118,7 @@ input {
 }
 
 .instructions-list li {
-    margin: 20px 0;
+    margin: 20px 0 20px 10px;
 }
 
 .small-image {
