@@ -52,22 +52,24 @@ input {
     color: white;
 }
 
-.one-half-column-last {
-    width: 49%;
-    float: left;
-    padding: 0; 
-    margin: 0;
+.last {
     margin-right: 0;
-    background:#06406C;
-    color: white;
+}
+
+.one-sixth-column {
+    width: 28%;
+    float: left;
+    margin-right: 2%;
+}
+
+.five-sixths-column {
+    width: 70%;
+    float: left;
 }
 
 .home-container {
     padding: 0 0 20px 20px;
 }
-
-
-
 
 .main-title {
     font-weight: bold;
@@ -95,13 +97,29 @@ input {
 .home-tags-list {
     list-style: none;
     padding: 0;
-    margin: 0;
-    margin-left: 20px;
+    margin: 0 0 40px 20px;
 }
 
 .home-tags-list li {
     padding: 0;
     margin: 0;
+}
+
+.instructions-list {
+    list-style: none;
+    padding: 20px;
+    margin: 20px;
+    background: white;
+}
+
+.instructions-list li {
+    margin: 20px 0;
+}
+
+.small-image {
+    height: 41px;
+    width: 41px;
+    line-height: 25px;
 }
 
 .show-tag {
@@ -301,15 +319,16 @@ img {
     width: 140px;
 }
 
-.one-half-column {
+.one-half-column, .one-sixth-column, .five-sixths-column {
     float: none;
     width: 100%;
+    
 }
 
-.one-half-column-last {
+.last { 
     margin-top: 20px;
-    width: 100%;
-    margin-right: 0;
 }
+
+
 
 }​

@@ -170,7 +170,7 @@ exports.getPhotosForMap = function(req, res){
 
 function calculateRanking(photos, fn){
     photos.forEach(function(item){
-        ranking = (item.votes / (Date.now() - item.dateCreated) * item.appearances) * 10000000;
+        ranking = (item.votes /  item.appearances) * 100;
         item.ranking = ranking.toFixed(2);
     })
     return fn(photos);
