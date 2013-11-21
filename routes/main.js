@@ -59,7 +59,7 @@ function checkIfPhotoExists(tag, photos, fn){
                     }
                 })
             })
-    fn(photos);
+    return fn(photos);
 }
 
 function searchFlickr(object, func) {
@@ -197,7 +197,7 @@ function transformPhotoForMap(photos, fn){
         location["message"] = fulllink;
         locations[photo.id] = location;
     })
-fn(locations);
+    return fn(locations);
 
 }
                
