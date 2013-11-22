@@ -38,7 +38,8 @@ function requestPhotos(req, res) {
     var tag = req.body.tag.toLowerCase();
     saveQuery(tag, function(){
         getPhotosFromFlickr(tag, 2, function(error, photos) {
-            checkIfPhotoExists(photos, function(photos){
+
+            checkIfPhotoExists(tag, photos, function(photos){
                 res.json(photos);
             })
         })
