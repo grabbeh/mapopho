@@ -109,13 +109,18 @@ input {
 .instructions-title {
     margin: 20px 0 0 20px;
     font-weight: bold;
+    padding-top: 20px;
+}
+
+.instructions-container {
+    background: white;
 }
 
 .instructions-list {
     list-style: none;
-    padding: 20px;
+    padding: 0 20px 20px 20px;
     margin: 20px 0 20px 20px;
-    background: white;
+    
 }
 
 .instructions-list li {
@@ -336,7 +341,5 @@ img {
     .instructions-list {
         margin-left: 0;
     }
-    .instructions-title {
-        margin-left: 0;
-    }
+
 }​
