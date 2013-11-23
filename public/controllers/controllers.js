@@ -33,7 +33,7 @@ appModule
 
             $scope.showPhotosForTag = function(){
                 if ($scope.showtag === undefined || !$scope.showtag){
-                    $scope.error = "Please provide a tag"
+                    $scope.showerror = "Please provide a tag"
                 }
                 else {
                    $location.path('/show/' + $scope.showtag); 
@@ -42,7 +42,7 @@ appModule
 
             $scope.showPhotosOnMap = function(){
                 if ($scope.maptag === undefined || !$scope.maptag){
-                    $scope.error = "Please provide a tag"
+                    $scope.maperror = "Please provide a tag"
                 }
                 else {
                 $location.path('/map/' + $scope.maptag);
