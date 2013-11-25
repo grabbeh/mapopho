@@ -160,13 +160,13 @@ appModule.directive('map', function() {
         replace: true,
         template: '<div></div>',
         link: function(scope, element, attrs) {
-            var map = L.map(attrs.id, {
+            var map = L.mapbox.map(attrs.id, 'grabbeh.gch0omlb',{
                 center: [33, 31],
                 zoom: 2,
                 minZoom: 1
             });
             
-            L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png').addTo(map);
+            //L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png').addTo(map);
 
             var clusterer = L.markerClusterGroup();
 

@@ -1,9 +1,9 @@
 <div id="maincontainer">
   <div id="container">
     <div>
-    <div class="main-title">"Wonder no more about what part of the world has the best photos"</div>
+    <div class="main-title">Wonder no more about what part of the world has the best photos</div>
     <div class="one-half-column">
-      <div class="home-container">
+    <div class="home-search-container">
     <div class="home-title">Show photos for...</div>
   
     <form ng-submit="showPhotosForTag()">
@@ -14,7 +14,7 @@
     </div>
     </div>
     <div class="one-half-column last">
-      <div class="home-container">
+      <div class="home-map-container">
       <div class="home-title">Show map for...</div>
       <form ng-submit="showPhotosOnMap()">
         <input class="input" placeholder="Tag" ng-model="maptag">
@@ -22,6 +22,7 @@
       </form>
       <div class="error-message" ng-show="maperror">{{ maperror }} </div>
     </div>
+
     </div>
   </div>
   <div style="clear:both"></div>
