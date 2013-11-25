@@ -43,11 +43,11 @@ input {
 }
 
 .one-half-column {
-    width: 49%;
+    width: 47%;
     float: left;
     padding: 0; 
     margin: 0;
-    margin-right: 2%;
+    margin-right: 6%;
     
 }
 
@@ -68,16 +68,27 @@ input {
 
 .home-search-container {
     padding: 10px 20px 20px 20px;
-    margin: 0 auto;
-    background:#ae2732;
+    margin-bottom: 10px;
+    background:#C85C5B;
     color: white;
 }
 
 .home-map-container {
     padding: 10px 20px 20px 20px;
-    margin: 0 auto;
-    background:#a427ae;
+    margin-bottom: 10px;
+    background:#1C3254;
     color: white;
+}
+
+.map-image {
+    margin: 20px 0 10px 0;
+}
+
+.place-holder {
+    border-style: dotted;
+    border-width: 1px;
+    height: 400px;
+    margin: 20px 0;
 }
 
 .main-title {
@@ -85,7 +96,7 @@ input {
     font-size: 28px;
     margin: 10px 0 30px 0;
     padding: 30px;
-    background: #27ae60;
+    background: #47C2AB;
     color: white;
 }
 
@@ -293,14 +304,14 @@ img {
 .error-message {
     padding: 10px;
     margin: 10px 0 20px 0;
-    background: red;
+    background: #C85C5B;
     color: white;
 }
 
 .loading-message {
     padding: 10px;
-    margin: 10px 0 10px 0;
-    background: green;
+    margin: 10px 0 20px 0;
+    background: #47C2AB;
     color: white;
 }
 

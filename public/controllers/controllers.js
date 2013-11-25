@@ -129,7 +129,7 @@ appModule
                    .error(function(){
                        $scope.loading = false;
                        $scope.error = true;
-                         })
+                    })
                 }
             }])
 
@@ -137,13 +137,16 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
     $scope.markers = {};
     
     if ($routeParams) {
+      $scope.loading = true;
+      $scope.error = false;
       $scope.tag = $routeParams.tag;
       $http.post('/getPhotosForMap', {tag: $routeParams.tag })
             .success(function(data){
+                $scope.loading = false;
                 $scope.markers = data;
             })
             .error(function(){
-                console.log("Error")
+                $scope.loading = false;
                 $scope.error = true;
             })
     }
