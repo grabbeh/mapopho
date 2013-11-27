@@ -179,28 +179,17 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
     $scope.filterMarkers = function(){
         $scope.loading = true;
         $scope.error = false;
-        var i = 0;
         var pcent = Number($scope.percentage);
-        console.log("Percentage = " + pcent)
         var copy = $scope.originalMarkers;
-        console.log("Copy length = " + Object.keys(copy).length)
         var fresh = {};
         for (var key in copy){
             var obj = copy[key];
-            for (var prop in obj){
-                console.log(obj[prop])
-            }
-            console.log("Looping")
-            console.log("Single object ranking = " + obj)
-            var ranking = Number(obj[ranking]);
-            if (ranking >= pcent){
+            if (Number(obj.ranking) >= pcent){
                fresh[key] = obj;
             }
         } 
-        console.log("Fresh length = " + Object.keys(fresh).length)
         $scope.loading = false;
         $scope.markers = fresh;
-        console.log(Object.keys($scope.markers).length)
     }
 
     $scope.canFilter = function(){
