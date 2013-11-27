@@ -6,9 +6,9 @@
     <div class="home-search-container">
     <div class="home-title">Show photos for...</div>
   
-    <form ng-submit="showPhotosForTag()">
-        <input class="input" placeholder="Tag" ng-model="showtag">
-        <input type="submit" class="button" value="Search">
+    <form novalidate name="homeTagForm" ng-submit="showPhotosForTag()">
+        <input class="input" placeholder="Tag" name="tag" required ng-model="showtag">
+        <input type="submit" ng-disabled="!canSubmitTag()" class="button" value="Search">
       </form>
       <div class="error-message" ng-show="showerror">{{ showerror }} </div>
     </div>
@@ -17,9 +17,9 @@
     <div class="one-half-column last">
       <div class="home-map-container">
       <div class="home-title">Show map for...</div>
-      <form ng-submit="showPhotosOnMap()">
-        <input class="input" placeholder="Tag" ng-model="maptag">
-        <input type="submit" class="button" value="Search">
+      <form novalidate name="homeMapForm" ng-submit="showPhotosOnMap()">
+        <input class="input" placeholder="Tag" name="tag" required ng-model="maptag">
+        <input type="submit" ng-disabled="!canSubmitMap()" class="button" value="Search">
       </form>
       <div class="error-message" ng-show="maperror">{{ maperror }} </div>
     </div>

@@ -32,21 +32,19 @@ appModule
         function ($scope, $location) {
 
             $scope.showPhotosForTag = function(){
-                if ($scope.showtag === undefined || !$scope.showtag){
-                    $scope.showerror = "Please provide a tag"
-                }
-                else {
-                   $location.path('/show/' + $scope.showtag); 
-                } 
+                $location.path('/show/' + $scope.showtag);   
             }
 
             $scope.showPhotosOnMap = function(){
-                if ($scope.maptag === undefined || !$scope.maptag){
-                    $scope.maperror = "Please provide a tag"
-                }
-                else {
                 $location.path('/map/' + $scope.maptag);
-                }
+            }
+
+            $scope.canSubmitTag = function(){
+                return $scope.homeTagForm.$dirty && $scope.homeTagForm.$valid;
+            }
+
+            $scope.canSubmitMap = function(){
+                return $scope.homeMapForm.$dirty && $scope.homeMapForm.$valid;
             }
 
         }])
