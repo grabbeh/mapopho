@@ -154,11 +154,26 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
     }
 
     $scope.getPhotosForMap = function(){
+        if ($routeParams.tag !== $scope.tag){
         $location.path('/map/' + $scope.tag)
+        }
+        else {
+            $scope.loading = true;
+            $http.post('/getPhotosForMap', {tag: $routeParams.tag })
+            .success(function(data){
+                $scope.loading = false;
+                $scope.markers = data;
+                $scope.originalMarkers = data;
+            })
+            .error(function(){
+                $scope.loading = false;
+                $scope.error = true;
+            })
+        }
     }
 
     $scope.canSearch = function(){
-        return $scope.showMapForm.$dirty && $scope.showMapForm.$valid;
+        return $scope.showMapForm.$valid;
     }
 
     $scope.filterMarkers = function(){
