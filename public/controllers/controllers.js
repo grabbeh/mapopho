@@ -187,9 +187,10 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
         var fresh = {};
         for (var key in copy){
             var obj = copy[key];
+            console.log("Looping")
+            console.log("Single object = " + obj)
             if (Number(obj.ranking) >= pcent){
                fresh[key] = obj;
-               console.log(i++)
             }
         } 
         console.log("Fresh length = " + Object.keys(fresh).length)
