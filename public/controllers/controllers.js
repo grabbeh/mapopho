@@ -188,7 +188,7 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
         for (var key in copy){
             var obj = copy[key];
             console.log("Looping")
-            console.log("Single object ranking = " + obj.ranking)
+            console.log("Single object ranking = " + obj[ranking])
             var ranking = Number(obj.ranking);
             if (ranking >= pcent){
                fresh[key] = obj;
