@@ -128,7 +128,11 @@ appModule
                        $scope.error = true;
                     })
                 }
-            }])
+
+            $scope.canSearch = function(){
+                return $scope.searchPhotoForm.$dirty && $scope.searchPhotoForm.$valid;
+            }
+        }])
 
 appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     $scope.markers = {};
@@ -151,6 +155,11 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
     $scope.getPhotosForMap = function(){
         $location.path('/map/' + $scope.tag)
     }
+
+    $scope.canSearch = function(){
+        return $scope.showMapForm.$dirty && $scope.showMapForm.$valid;
+    }
+
 
 }]);
 

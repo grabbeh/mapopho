@@ -1,9 +1,9 @@
 <div id="maincontainer">
   <div id="container">
 
-      <form ng-submit="requestTwoPhotos()">
-        <input class="input" placeholder="Tag" ng-model="tag">
-        <input type="submit" class="button" value="Search">
+      <form name="searchPhotoForm" ng-submit="requestTwoPhotos()">
+        <input class="input" name="tag" required placeholder="Tag" ng-model="tag">
+        <input type="submit" ng-disabled="!canSearch()" class="button" value="Search">
       </form>
 
     <div class="loading-message" ng-show="loading">Loading...</div>
