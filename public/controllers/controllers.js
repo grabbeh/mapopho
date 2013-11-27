@@ -34,13 +34,12 @@ appModule
             $scope.showPhotosForTag = function(){
                 $location.path('/show/' + $scope.showtag);   
             }
+            $scope.canSubmitTag = function(){
+                 return $scope.homeTagForm.$dirty && $scope.homeTagForm.$valid;
+            }
 
             $scope.showPhotosOnMap = function(){
                 $location.path('/map/' + $scope.maptag);
-            }
-
-            $scope.canSubmitTag = function(){
-                return $scope.homeTagForm.$dirty && $scope.homeTagForm.$valid;
             }
 
             $scope.canSubmitMap = function(){
