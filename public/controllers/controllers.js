@@ -192,8 +192,10 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
                console.log(i++)
             }
         } 
+        console.log("Fresh length = " + Object.keys(fresh).length)
         $scope.loading = false;
         $scope.markers = fresh;
+        console.log(Object.keys($scope.markers).length)
     }
 
     $scope.canFilter = function(){
