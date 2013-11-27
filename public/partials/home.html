@@ -3,16 +3,15 @@
     <div>
     <div class="main-title">Wonder no more about what part of the world has the best photos</div>
     <div class="one-half-column">
-    <div class="home-search-container">
-    <div class="home-title">Show photos for...</div>
-  
-    <form novalidate name="homeTagForm" ng-submit="showPhotosForTag()">
-        <input class="input" placeholder="Tag" name="tag" required ng-model="showtag">
-        <input type="submit" ng-disabled="!canSubmitTag()" class="button" value="Search">
-      </form>
-      <div class="error-message" ng-show="showerror">{{ showerror }} </div>
-    </div>
-    <div><img class="map-image" src="/images/cat.png"></div>
+     <div class="home-search-container">
+      <div class="home-title">Show photos for...</div>
+        <form novalidate name="homeTagForm" ng-submit="showPhotosForTag()">
+          <input class="input" placeholder="Tag" name="tag" required ng-model="showtag">
+          <input type="submit" ng-disabled="!canSubmitTag()" class="button" value="Search">
+        </form>
+        <div class="error-message" ng-show="showerror">{{ showerror }} </div>
+      </div>
+      <div><img class="map-image" src="/images/cat.png"></div>
     </div>
     <div class="one-half-column last">
       <div class="home-map-container">

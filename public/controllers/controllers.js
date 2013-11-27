@@ -145,6 +145,7 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
             .success(function(data){
                 $scope.loading = false;
                 $scope.markers = data;
+                $scope.originalMarkers = data;
             })
             .error(function(){
                 $scope.loading = false;
@@ -160,6 +161,24 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
         return $scope.showMapForm.$dirty && $scope.showMapForm.$valid;
     }
 
+    $scope.filterMarkers = function(){
+        $scope.loading = true;
+        var pcent = Number($scope.percentage);
+        var copy = $scope.originalMarkers;
+        var fresh = {};
+        for (var key in copy){
+            var obj = copy[key];
+            if (Number(obj.ranking) >= pcent){
+               fresh[key] = obj;
+            }
+        } 
+        $scope.loading = false;
+        $scope.markers = fresh;
+    }
+
+    $scope.canFilter = function(){
+        return $scope.filterMarkersForm.$dirty && $scope.filterMarkersForm.$valid;
+    }
 
 }]);
 
@@ -169,27 +188,29 @@ appModule.directive('map', function() {
         replace: true,
         template: '<div></div>',
         link: function(scope, element, attrs) {
-            var map = L.mapbox.map(attrs.id, 'grabbeh.gch0omlb',{
+            map = L.mapbox.map(attrs.id, 'grabbeh.gch0omlb',{
                 center: [33, 31],
                 zoom: 2,
                 minZoom: 1
             });
-            
-            //L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png').addTo(map);
 
             var clusterer = L.markerClusterGroup();
+            var markers = [];
 
             function updatePoints(pts) {
+               clusterer.clearLayers(markers);
                for (var p in pts) {
                   var marker = L.marker([pts[p].lat, pts[p].lng]);
                   marker.bindPopup(pts[p].message, { maxWidth: 10000});
+                  markers.push(marker);
                   clusterer.addLayer(marker);
                }
+               map.addLayer(clusterer);
             }
-            map.addLayer(clusterer);
-
             scope.$watch(attrs.markers, function(value) {
-               updatePoints(value);
+                 console.log(Object.keys(value).length);
+                 map.removeLayer(clusterer);
+                 updatePoints(value);
             });
         }
     };

@@ -38,7 +38,6 @@ function requestPhotos(req, res) {
     var tag = req.body.tag.toLowerCase();
     saveQuery(tag, function(){
         getPhotosFromFlickr(tag, 2, function(error, photos) {
-
             checkIfPhotoExists(tag, photos, function(photos){
                 res.json(photos);
             })
@@ -158,6 +157,8 @@ exports.voteOnPhoto = function(req, res){
 
 exports.getPhotosForMap = function(req, res){
     Photo.find({tag: req.body.tag.toLowerCase(), isVoted: true}, function(err, photos){
+        if (err) { throw new Error(err)}
+    
         if (photos[0] === undefined || !photos) { res.status(500).send() }
         else { 
             calculateRanking(photos, function(photos){
@@ -171,8 +172,8 @@ exports.getPhotosForMap = function(req, res){
 
 function calculateRanking(photos, fn){
     photos.forEach(function(item){
-        ranking = (item.votes /  item.appearances) * 100;
-        item.ranking = ranking.toFixed(2);
+        var ranking = (item.votes /  item.appearances) * 100;
+        item.ranking = ranking.toFixed(0);
     })
     return fn(photos);
 }
@@ -196,6 +197,7 @@ function transformPhotoForMap(photos, fn){
         location["lat"] = photo.location[0];
         location["lng"] = photo.location[1];
         location["message"] = fulllink;
+        location["ranking"] = photo.ranking;
         locations[photo.id] = location;
     })
     return fn(locations);

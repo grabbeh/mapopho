@@ -225,6 +225,13 @@ margin: 0px 10px 10px 0px;
     margin-top: 10px;
 }
 
+.map-search-input {
+    float: left;
+}
+.map-filter-input {
+    float: right;
+}
+
 /* main page */
 
 .photo-list {
@@ -357,6 +364,13 @@ img {
 
     .instructions-list {
         margin-left: 0;
+    }
+
+    .map-search-input {
+        margin-right: 20px;
+    }
+    .map-filter-input {
+        float: none;
     }
 
 }​
