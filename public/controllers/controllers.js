@@ -179,6 +179,7 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
     $scope.filterMarkers = function(){
         $scope.loading = true;
         $scope.error = false;
+        var i = 0;
         var pcent = Number($scope.percentage);
         var copy = $scope.originalMarkers;
         var fresh = {};
@@ -186,6 +187,7 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
             var obj = copy[key];
             if (Number(obj.ranking) >= pcent){
                fresh[key] = obj;
+               console.log(i++)
             }
         } 
         $scope.loading = false;
