@@ -209,7 +209,6 @@ appModule.directive('map', function() {
             }
             scope.$watch(attrs.markers, function(value) {
                  console.log(Object.keys(value).length);
-                 map.removeLayer(clusterer);
                  updatePoints(value);
             });
         }
