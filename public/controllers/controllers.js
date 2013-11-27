@@ -178,6 +178,7 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
 
     $scope.filterMarkers = function(){
         $scope.loading = true;
+        $scope.error = false;
         var pcent = Number($scope.percentage);
         var copy = $scope.originalMarkers;
         var fresh = {};
@@ -194,7 +195,6 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
     $scope.canFilter = function(){
         return $scope.filterMarkersForm.$dirty && $scope.filterMarkersForm.$valid;
     }
-
 }]);
 
 appModule.directive('map', function() {
