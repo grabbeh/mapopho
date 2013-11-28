@@ -180,11 +180,15 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
         $scope.loading = true;
         $scope.error = false;
         var pcent = Number($scope.percentage);
+        console.log("markers = " + $scope.markers);
+        console.log("Copied markers = " + $scope.originalMarkers);
         var copy = $scope.originalMarkers;
         var fresh = {};
         for (var key in copy){
             var obj = copy[key];
-            console.log(obj.lat)
+            for (var prop in obj){
+                console.log(obj[prop])
+            }
             if (Number(obj.ranking) >= pcent){
                fresh[key] = obj;
             }
