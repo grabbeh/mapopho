@@ -180,8 +180,8 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
         $scope.loading = true;
         $scope.error = false;
         var pcent = Number($scope.percentage);
-        console.log("markers = " + $scope.markers);
-        console.log("Copied markers = " + $scope.originalMarkers);
+        console.log($scope.markers);
+        console.log($scope.originalMarkers);
         var copy = $scope.originalMarkers;
         var fresh = {};
         for (var key in copy){
