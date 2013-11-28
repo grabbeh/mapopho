@@ -2,7 +2,7 @@
   <div id="container">
     <div class="one-half-column">
   	<span class="map-search-input">
-      <form name="showMapForm" ng-submit="getPhotosForMap()">
+      <form novalidate name="showMapForm" ng-submit="getPhotosForMap()">
         <input class="input" name="tag" required placeholder="Tag" ng-model="tag">
         <input type="submit" ng-disabled="!canSearch()" class="button" value="Search">
       </form>
@@ -10,7 +10,7 @@
   </div>
   <div class="one-half-column last">
     <span class="map-filter-input">
-      <form name="filterMarkersForm" ng-submit="filterMarkers()">
+      <form novalidate name="filterMarkersForm" ng-submit="filterMarkers()">
         <input type="number" class="input" name="percentage" required placeholder="Percentage" ng-model="percentage">
         <input type="submit" ng-disabled="!canFilter()" class="button" value="Filter">
       </form>
