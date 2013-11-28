@@ -11,7 +11,7 @@
   <div class="one-half-column last">
     <span class="map-filter-input">
       <form name="filterMarkersForm" ng-submit="filterMarkers()">
-        <input class="input" name="percentage" required placeholder="Percentage" ng-model="percentage">
+        <input type="number" class="input" name="percentage" required placeholder="Percentage" ng-model="percentage">
         <input type="submit" ng-disabled="!canFilter()" class="button" value="Filter">
       </form>
     </span>
