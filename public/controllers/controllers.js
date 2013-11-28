@@ -184,7 +184,7 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
         var fresh = {};
         for (var key in copy){
             var obj = copy[key];
-            console.log(obj.ranking)
+            console.log(obj.lat)
             if (Number(obj.ranking) >= pcent){
                fresh[key] = obj;
             }
