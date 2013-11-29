@@ -130,7 +130,7 @@ appModule
                 }
 
             $scope.canSearch = function(){
-                return $scope.searchPhotoForm.$dirty && $scope.searchPhotoForm.$valid;
+                return $scope.searchPhotoForm.$valid;
             }
         }])
 
