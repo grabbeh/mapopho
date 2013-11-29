@@ -1,7 +1,7 @@
 <div id="maincontainer">
   <div id="container">
 
-      <form name="searchPhotoForm" ng-submit="requestTwoPhotos()">
+      <form novalidiate name="searchPhotoForm" ng-submit="requestTwoPhotos()">
         <input class="input" name="tag" required placeholder="Tag" ng-model="tag">
         <input type="submit" ng-disabled="!canSearch()" class="button" value="Search">
       </form>
