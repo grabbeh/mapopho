@@ -25,9 +25,9 @@ function requestOnePhoto(req, res) {
     Photo.findOne({id: req.body.photo.id})
        .update({notTag: true})
        .exec(function(){
-            getPhotosFromFlickr(tag, 1, function(error, photos){
-                    checkIfPhotoExists(tag, photos, function(photos){
-                        res.json(photos);
+            getPhotosFromFlickr(tag, 1, function(error, photo){
+                    checkIfPhotoExists(tag, photo, function(photo){
+                        res.json(photo);
                     })
                 })
             })  
@@ -55,6 +55,7 @@ function checkIfPhotoExists(tag, photos, fn){
                 if (err || !photo){ saveNewPhoto(p) }
                     else { 
                         appearances = photo.appearances + 1;
+                        // callback necessary to trigger update as per mongoose docs
                         photo.update({appearances:appearances}, function(){})
                     }
                 })
@@ -180,7 +181,9 @@ function calculateRanking(photos, fn){
 
 function transformPhotoForMap(photos, fn){
     locations = {};
-    $ = cheerio.load('<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div>');
+    $ = cheerio.load(
+        '<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="appearances" style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div><div class="ranking" style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div>'
+        );
     photos.forEach(function(photo){
 
         var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
@@ -190,8 +193,9 @@ function transformPhotoForMap(photos, fn){
         $('img').attr('src', pictureurl);
         if (photo.appearances === 1) { var app = ' appearance' } else { var app = ' appearances'}
         if (photo.votes === 1) { var vot = ' vote' } else { var vot = ' votes'}
-        $('div').text(photo.votes + vot + ' / '  + photo.appearances + app);
 
+        $('div.appearances').text(photo.votes + vot + ' / '  + photo.appearances + app);
+        $('div.ranking').text(photo.ranking);
         var fulllink = $.html();
         var location = {};
         location["lat"] = photo.location[0];
