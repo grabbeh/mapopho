@@ -181,8 +181,7 @@ function calculateRanking(photos, fn){
 
 function transformPhotoForMap(photos, fn){
     locations = {};
-    $ = cheerio.load(
-        '<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="appearances" style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div><div class="ranking" style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div>');
+    $ = cheerio.load('<div><a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="appearances" style="background: #222222; padding: 10px; color: white; position: absolute; z-index: 100; top: 15px; right: 22px; font-weight: bold; font-size: 20px;"></div></div>');
     photos.forEach(function(photo){
 
         var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
@@ -193,8 +192,8 @@ function transformPhotoForMap(photos, fn){
         if (photo.appearances === 1) { var app = ' appearance' } else { var app = ' appearances'}
         if (photo.votes === 1) { var vot = ' vote' } else { var vot = ' votes'}
 
-        $('div.appearances').text(photo.votes + vot + ' / '  + photo.appearances + app);
-        $('div.ranking').text(photo.ranking);
+        //$('div.appearances').text();
+        $('div.appearances').text(photo.ranking);
         var fulllink = $.html();
         var location = {};
         location["lat"] = photo.location[0];
