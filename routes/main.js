@@ -182,8 +182,7 @@ function calculateRanking(photos, fn){
 function transformPhotoForMap(photos, fn){
     locations = {};
     $ = cheerio.load(
-        '<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="appearances" style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div><div class="ranking" style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div>'
-        );
+        '<a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="appearances" style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div><div class="ranking" style="margin-top: 10px; width: 300px; font-weight: bold; font-size: 20px;"></div>');
     photos.forEach(function(photo){
 
         var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
