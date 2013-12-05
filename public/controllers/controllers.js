@@ -6,10 +6,6 @@ appModule.config(['$routeProvider', function($routeProvider){
             templateUrl: '/partials/home.html',
             controller: 'homeController'
         }).
-        when('/show', {
-            templateUrl: '/partials/show.html',
-            controller: 'showController'
-        }).
         when('/show/:tag', {
             templateUrl: '/partials/show.html',
             controller: 'showController'
@@ -26,6 +22,22 @@ appModule.config(['$routeProvider', function($routeProvider){
             redirectTo: '/'
     });
 }]);
+
+appModule.factory('photoGetter', ['$http', function ($http) {
+    return photoGetter = {
+        requestTwoPhotos: function(tag){
+            return $http.post('/requestTwoPhotos', { tag: tag});
+        },
+        getOnePhoto: function(tag, photo){
+            return $http.post('/requestOnePhoto', { tag: tag, photo: photo});
+        },
+        getPhotosForMap: function(tag){
+            return $http.post('/getPhotosForMap', {tag: tag})
+        }
+    }
+}]);
+
+
 
 appModule
     .controller('homeController', ['$scope', '$location', 
@@ -49,45 +61,35 @@ appModule
         }])
 
 appModule
-    .controller('showController', ['$scope', '$location', '$routeParams', '$http', 
-        function ($scope, $location, $routeParams, $http) {
-        $scope.loading = false;
-        $scope.error = false;
+    .controller('showController', ['$scope', '$location', 'photoGetter', '$routeParams', '$http', 
+        function ($scope, $location, photoGetter, $routeParams, $http) {
 
-        if ($routeParams.tag){
             $scope.tag = $routeParams.tag;
-            $scope.loading = true;
             $scope.photos = false;
-            $http.post('/requestTwoPhotos', { tag: $routeParams.tag })
-                .success(function(data){
-                    $scope.loading = false;
-                    $scope.photos = data;
-                 })
-                .error(function(){
-                    $scope.loading = false;
+
+            photoGetter.requestTwoPhotos($routeParams.tag)
+               .then(function(response){
+                    $scope.photos = response.data;
+                 }, 
+                 function(){
                     $scope.error = true;
                  })
-              }
+              
 
             $scope.requestTwoPhotos = function(){
-                
                 if ($routeParams.tag !== $scope.tag) {
                     $scope.error = false;
                     $scope.photos = false;
-                    $scope.loading = true;
                     $location.path('/show/' + $scope.tag); 
                 }
                 else {
                     $scope.error = false;
-                    $scope.loading = true;
                     $scope.photos = false;
-                    $http.post('/requestTwoPhotos', { tag: $routeParams.tag })
-                        .success(function(data){
-                            $scope.loading = false;
-                            $scope.photos = data;
-                         })
-                        .error(function(){
-                            $scope.loading = false;
+                    photoGetter.requestTwoPhotos($routeParams.tag)
+                       .then(function(response){
+                            $scope.photos = response.data;
+                         }, 
+                        function(){
                             $scope.error = true;
                          })
                     }
@@ -98,27 +100,26 @@ appModule
                 $scope.photos.forEach(function (p, i) {
                     if (photo.id === p.id) {
                         $scope.photos.splice(i, 1);
-                        $http.post('/requestOnePhoto', { tag: $scope.tag || $routeParams.tag, photo:photo })
-                            .success(function(data){
-                                $scope.loading = false;
-                                $scope.photos.push(data[0]);
-                        })
-                        .error(function(){
-                            $scope.loading = false;
-                            $scope.error = true;
-                         })    
+                        
                     }
                 })
-            }
+
+                var tag = $scope.tag || $routeParams.tag
+                photoGetter.requestTwoPhotos(tag, photo)
+                    .then(function(response){
+                        $scope.photos.push(response.data[0]);
+                    },
+                    function(){
+                        $scope.error = true;
+                    })
+                }
 
             $scope.voteOnPhoto = function(photo){
                 $scope.photos = false;
                 $scope.loading = true;
-                var postData = {
-                    photo: photo,
-                    tag: $scope.tag || $routeParams.tag
-                }
-                $http.post('/voteOnPhoto', postData)
+
+                var tag = $scope.tag || $routeParams.tag;
+                $http.post('/voteOnPhoto', {photo: photo, tag: tag})
                    .success(function(data){
                        $scope.loading = false;
                        $scope.photos = data;
@@ -134,40 +135,33 @@ appModule
             }
         }])
 
-appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
+appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$routeParams', '$http', 
+    function($scope, $location, photoGetter, $routeParams, $http) {
     $scope.markers = {};
-    
     if ($routeParams) {
-      $scope.loading = true;
-      $scope.error = false;
       $scope.tag = $routeParams.tag;
-      $http.post('/getPhotosForMap', {tag: $routeParams.tag })
-            .success(function(data){
-                $scope.loading = false;
-                $scope.markers = data;
-                $scope.originalMarkers = data;
-            })
-            .error(function(){
-                $scope.loading = false;
-                $scope.error = true;
+      var tag = $routeParams.tag;
+      photoGetter.getPhotosForMap(tag).then
+        (function(response){
+                $scope.markers = response.data;
+                $scope.originalMarkers = response.data;
+            },
+            function(){ $scope.error = true;
             })
     }
 
     $scope.getPhotosForMap = function(){
         if ($routeParams.tag !== $scope.tag){
-        $location.path('/map/' + $scope.tag)
+            $location.path('/map/' + $scope.tag)
         }
         else {
             $scope.loading = true;
-            $http.post('/getPhotosForMap', {tag: $routeParams.tag })
-            .success(function(data){
-                $scope.loading = false;
-                $scope.markers = data;
-                $scope.originalMarkers = data;
-            })
-            .error(function(){
-                $scope.loading = false;
-                $scope.error = true;
+            photoGetter.getPhotosForMap($routeParams.tag)
+            .then(function(response){
+                $scope.markers = response.data;
+                $scope.originalMarkers = response.data;
+            }, 
+            function(){ $scope.error = true;
             })
         }
     }
@@ -194,6 +188,13 @@ appModule.controller("mapController", ['$scope', '$location', '$routeParams', '$
 
     $scope.canFilter = function(){
         return $scope.filterMarkersForm.$dirty && $scope.filterMarkersForm.$valid;
+    }
+
+    $scope.getGeoJson = function(){
+        $http.get('/geojson')
+            .success(function(data){
+                $scope.geojson = data;
+            })
     }
 }]);
 
@@ -222,13 +223,40 @@ appModule.directive('map', function() {
                }
                map.addLayer(clusterer);
             }
+
+            function updateGeoJson(gjson){
+                L.geoJson(gjson, 
+                    { style: {
+                        "color": "grey",
+                        "weight": 1,
+                        "opacity": 1 
+                }}).addTo(map)
+            }
+                
             scope.$watch(attrs.markers, function(value) {
-                 console.log(Object.keys(value).length);
                  updatePoints(value);
             });
+
+            /*scope.$watch(attrs.geojson, function(value){
+                updateGeoJson(value);
+            })*/
         }
     };
 });
 
+appModule.directive('loading', function($rootScope) {
+  return {
+    link: function(scope, element, attrs) {
+      element.addClass('hide');
 
+      $rootScope.$on('$routeChangeStart', function() {
+        element.removeClass('hide');
+      });
+
+      $rootScope.$on('$routeChangeSuccess', function() {
+        element.addClass('hide');
+      });
+    }
+  };
+});
 

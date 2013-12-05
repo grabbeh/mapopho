@@ -42,6 +42,8 @@ app.post('/voteOnPhoto', routes.voteOnPhoto);
 
 app.post('/getPhotosForMap', routes.getPhotosForMap);
 
+app.get('/geojson', routes.getGeoJson)
+
 app.get('*', function(req, res){
   res.send('404, page not found', 404);
 });

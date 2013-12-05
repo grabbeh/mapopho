@@ -5,7 +5,8 @@ var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
     flickr = new FlickrAPI(api.details.key),
     Photo = require('../models/photo.js'),
     Query = require('../models/query.js'),
-    cityarray = require('../config/basiccities.json');
+    cityarray = require('../config/basiccities.json'),
+    geojson = require('../geojson/world.json');
 
 exports.home = function (req, res) {
     res.render('home');
@@ -181,28 +182,29 @@ function calculateRanking(photos, fn){
 
 function transformPhotoForMap(photos, fn){
     locations = {};
-    $ = cheerio.load('<div style="width: 300px"><a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="appearances" style="background: #222222; padding: 10px; color: white; position: absolute; z-index: 100; top: 14px; right: 21px; font-weight: bold; font-size: 20px;"></div></div>');
+    $ = cheerio.load('<div style="width: 300px"><a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="rating" style="background: #222222; padding: 10px; color: white; position: absolute; z-index: 100; top: 14px; right: 21px; font-weight: bold; font-size: 20px;"></div></div>');
     photos.forEach(function(photo){
 
-        var pictureurl = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
-        var flickrlink = "http://flickr.com/photo.gne?id=" + photo.id + "/";
+        var image = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
+        var flickr = "http://flickr.com/photo.gne?id=" + photo.id + "/";
 
-        $('a').attr('href', flickrlink);
-        $('img').attr('src', pictureurl);
-        if (photo.appearances === 1) { var app = ' appearance' } else { var app = ' appearances'}
-        if (photo.votes === 1) { var vot = ' vote' } else { var vot = ' votes'}
+        $('a').attr('href', flickr);
+        $('img').attr('src', image);
+        $('div.rating').text(photo.ranking);
 
-        //$('div.appearances').text();
-        $('div.appearances').text(photo.ranking);
-        var fulllink = $.html();
+        var html = $.html();
         var location = {};
         location["lat"] = photo.location[0];
         location["lng"] = photo.location[1];
-        location["message"] = fulllink;
+        location["message"] = html;
         location["ranking"] = photo.ranking;
         locations[photo.id] = location;
     })
     return fn(locations);
 
+}
+
+exports.getGeoJson = function(req, res){
+    res.json(geojson);
 }
                

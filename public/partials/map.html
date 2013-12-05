@@ -17,9 +17,9 @@
     </span>
   </div>
     <div style="clear:both"></div>
-      <div class="loading-message" ng-show="loading">Loading...</div>
+      <div class="loading-message" ng-hide="markers || error">Loading...</div>
       <div class="error-message" ng-show="error">No pictures for this tag unfortunately </div>
-   <map id="map" markers="markers"></map>
+   <map id="map" markers="markers" geojson="geojson"></map>
    <br></br>
    </div>
 </div>
