@@ -137,7 +137,7 @@ appModule
 
 appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$routeParams', '$http', 
     function($scope, $location, photoGetter, $routeParams, $http) {
-    $scope.markers = {};
+
     if ($routeParams) {
       $scope.tag = $routeParams.tag;
       var tag = $routeParams.tag;
@@ -155,7 +155,6 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
             $location.path('/map/' + $scope.tag)
         }
         else {
-            $scope.loading = true;
             photoGetter.getPhotosForMap($routeParams.tag)
             .then(function(response){
                 $scope.markers = response.data;
