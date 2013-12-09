@@ -141,13 +141,11 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
     if ($routeParams) {
       $scope.tag = $routeParams.tag;
       var tag = $routeParams.tag;
-      photoGetter.getPhotosForMap(tag).then
-        (function(response){
-                $scope.markers = response.data;
-                $scope.originalMarkers = response.data;
+      photoGetter.getPhotosForMap(tag)
+        .then(function(response){
+            $scope.markers = $scope.originalMarkers = response.data;
             },
-            function(){ $scope.error = true;
-            })
+            function(){ $scope.error = true;})
     }
 
     $scope.getPhotosForMap = function(){
@@ -160,8 +158,8 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
                 $scope.markers = response.data;
                 $scope.originalMarkers = response.data;
             }, 
-            function(){ $scope.error = true;
-            })
+            function(){ $scope.error = true;}
+            )
         }
     }
 
@@ -171,7 +169,6 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
 
     $scope.filterMarkers = function(){
         $scope.loading = true;
-        $scope.error = false;
         var pcent = Number($scope.percentage);
         var copy = $scope.originalMarkers;
         var fresh = {};
@@ -181,7 +178,6 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
                fresh[key] = obj;
             }
         } 
-        $scope.loading = false;
         $scope.markers = fresh;
     }
 
@@ -199,7 +195,6 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
 
 appModule.directive('map', function() {
     return {
-        restrict: 'E',
         replace: true,
         template: '<div></div>',
         link: function(scope, element, attrs) {

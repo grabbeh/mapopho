@@ -17,6 +17,10 @@ input::-webkit-inner-spin-button {
     max-width: 200px;
 }
 
+.small-text {
+    font-size: 12px;
+}
+
 .button {
     height: 40px;
     font-size: 20px;
@@ -331,7 +335,7 @@ img {
 
 /* MOBILE RESPONSIVE CHANGE */
 
-@media handheld, only screen and (max-width: 750px) {
+@media handheld, only screen and (max-width: 600px) {
 
 
    #container {
