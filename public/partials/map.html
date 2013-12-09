@@ -13,7 +13,7 @@
       <form novalidate name="filterMarkersForm" ng-submit="filterMarkers()">
         <input type="number" class="input" name="percentage" required placeholder="1 to 100" ng-model="percentage">
         <input type="submit" ng-disabled="!canFilter()" class="button" value="Filter">
-        <div class="small-text">Show photos with rating greater than given number</div>
+        <div class="small-text">Show photos with rating greater or equal to given number</div>
       </form>
     </span>
   </div>
