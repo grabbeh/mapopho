@@ -21,6 +21,13 @@ input::-webkit-inner-spin-button {
     font-size: 12px;
 }
 
+.privacy {
+    padding: 20px;
+    background: #363636;
+    color: white;
+    margin-top: 20px;
+    font-size: 16px;}
+
 .button {
     height: 40px;
     font-size: 20px;
