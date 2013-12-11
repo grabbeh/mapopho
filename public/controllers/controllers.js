@@ -188,7 +188,6 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
     //$scope.getGeoJson = function(){
         $http.get('/geojson')
             .success(function(data){
-                console.log("Data")
                 $scope.geojson = data;
             })
        // }
@@ -208,10 +207,6 @@ appModule.directive('map', function() {
             var clusterer = L.markerClusterGroup();
             var markers = [];
 
-            map.on('click', function(e){
-                console.log(e);
-            })
-
             function updatePoints(pts) {
                clusterer.clearLayers(markers);
                for (var p in pts) {
@@ -225,11 +220,20 @@ appModule.directive('map', function() {
 
             function updateGeoJson(gjson){
                 L.geoJson(gjson, 
-                    { style: {
-                        "color": "white",
+                    { 
+                style: {
+                       "color": "white",
                         "weight": 0,
                         "opacity": 0 
-                }}).addTo(map)
+                },
+                onEachFeature: function (features, layer) {
+                     layer.on('click', function(e){
+                        console.log(e);
+                     })
+                }
+
+
+            }).addTo(map)
             }
                 
             scope.$watch(attrs.markers, function(value) {
