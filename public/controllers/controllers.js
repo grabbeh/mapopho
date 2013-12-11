@@ -226,14 +226,12 @@ appModule.directive('map', function() {
                         "weight": 0,
                         "opacity": 0 
                 },
-                onEachFeature: function (features, layer) {
+                onEachFeature: function (feature, layer) {
                      layer.on('click', function(e){
-                        console.log(e);
-                     })
-                }
-
-
-            }).addTo(map)
+                        var lay = e.target;
+                        console.log(lay.feature.id);
+                    })
+            }}).addTo(map)
             }
                 
             scope.$watch(attrs.markers, function(value) {
