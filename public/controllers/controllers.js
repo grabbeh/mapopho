@@ -185,12 +185,13 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
         return $scope.filterMarkersForm.$dirty && $scope.filterMarkersForm.$valid;
     }
 
-    $scope.getGeoJson = function(){
+    //$scope.getGeoJson = function(){
         $http.get('/geojson')
             .success(function(data){
+                console.log("Data")
                 $scope.geojson = data;
             })
-    }
+       // }
 }]);
 
 appModule.directive('map', function() {
@@ -221,9 +222,9 @@ appModule.directive('map', function() {
             function updateGeoJson(gjson){
                 L.geoJson(gjson, 
                     { style: {
-                        "color": "grey",
-                        "weight": 1,
-                        "opacity": 1 
+                        "color": "white",
+                        "weight": 0,
+                        "opacity": 0 
                 }}).addTo(map)
             }
                 
@@ -231,9 +232,9 @@ appModule.directive('map', function() {
                  updatePoints(value);
             });
 
-            /*scope.$watch(attrs.geojson, function(value){
+            scope.$watch(attrs.geojson, function(value){
                 updateGeoJson(value);
-            })*/
+            })
         }
     };
 });
