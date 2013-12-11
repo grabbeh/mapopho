@@ -208,6 +208,10 @@ appModule.directive('map', function() {
             var clusterer = L.markerClusterGroup();
             var markers = [];
 
+            map.on('click', function(e){
+                console.log(e);
+            })
+
             function updatePoints(pts) {
                clusterer.clearLayers(markers);
                for (var p in pts) {
