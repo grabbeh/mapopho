@@ -4,7 +4,7 @@ var mongoose = require('mongoose')
 
 var photoSchema = new Schema({
     location: Array,
-    location: Array,
+    country: String,
     tag: String,
     id: String,
     farm: Number,

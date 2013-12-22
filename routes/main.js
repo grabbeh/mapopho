@@ -5,22 +5,23 @@ var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
     flickr = new FlickrAPI(api.details.key),
     Photo = require('../models/photo.js'),
     Query = require('../models/query.js'),
-    cityarray = require('../config/basiccities.json'),
-    geojson = require('../geojson/world.json');
+    gju = require('geojson-utils'),
+    cities = require('../config/basiccities.json'),
+    world = require('../geojson/world.json');
 
 exports.home = function (req, res) {
     res.render('home');
 };
 
-exports.requestTwoPhotos = function(req, res) {
-    requestPhotos(req, res);
+exports.getTwoPhotos = function(req, res) {
+    getPhotos(req, res);
 }
 
-exports.requestOnePhoto = function(req, res) {
-    requestOnePhoto(req, res);
+exports.getOnePhoto = function(req, res) {
+    getOnePhoto(req, res);
 }
 
-function requestOnePhoto(req, res) {
+function getOnePhoto(req, res) {
     photos = [];
     var tag = req.body.tag.toLowerCase();
     Photo.findOne({id: req.body.photo.id})
@@ -34,7 +35,7 @@ function requestOnePhoto(req, res) {
             })  
         }
 
-function requestPhotos(req, res) {
+function getPhotos(req, res) {
     photos = [];
     var tag = req.body.tag.toLowerCase();
     saveQuery(tag, function(){
@@ -48,12 +49,15 @@ function requestPhotos(req, res) {
 
 function checkIfPhotoExists(tag, photos, fn){
 
-    if (photos.length > 2){
-        photos.pop();
-    }
+    if (photos.length > 2){ photos.pop();}
     photos.forEach(function(p){
             Photo.findOne({id: p.id, tag: tag}, function(err, photo){
-                if (err || !photo){ saveNewPhoto(p) }
+                if (err || !photo){ 
+
+                    determineWhatCountryPointIsIn(p, function(err, p){
+                        if (p){ saveNewPhoto(p); }
+                        })
+                    }
                     else { 
                         appearances = photo.appearances + 1;
                         // callback necessary to trigger update as per mongoose docs
@@ -78,9 +82,9 @@ function searchFlickr(object, func) {
 }
 
 function getPhotosFromFlickr(tag, number, cb) {
-    var cityindex = Math.floor((Math.random() * cityarray.length));
-    var place = cityarray[cityindex];
-    var coordinate = [place.lat, place.lng];
+    var random = Math.floor((Math.random() * cities.length));
+    var randomCity = cities[random];
+    var coordinate = [randomCity.lat, randomCity.lng];
 
     flickrSearchOption = new flickrSearchOptions(tag, coordinate);
     searchFlickr(flickrSearchOption, function (error, photo) {
@@ -113,10 +117,11 @@ function flickrSearchOptions(tag, arr) {
     this.radius = 5;
 }
 
-function saveNewPhoto(o, fn){
+function saveNewPhoto(o){
+
     new Photo({
         location: o.location,
-        locationTwo: o.locationTwo,
+        country: o.country,
         tag: o.tag.toLowerCase(),
         id: o.id,
         farm: o.farm,
@@ -126,7 +131,7 @@ function saveNewPhoto(o, fn){
         votes: 0,
         appearances: 1,
         notTag: false
-    }).save(fn);
+    }).save();
 }
 
 function saveQuery(tag, fn){
@@ -149,7 +154,7 @@ exports.voteOnPhoto = function(req, res){
         var votes = photo.votes + 1;
         photo.update({isVoted: true}, function(){
             photo.update({votes: votes}, function(){
-                requestPhotos(req, res);
+                getPhotos(req, res);
             });
         });
         }
@@ -160,7 +165,6 @@ exports.voteOnPhoto = function(req, res){
 exports.getPhotosForMap = function(req, res){
     Photo.find({tag: req.body.tag.toLowerCase(), isVoted: true}, function(err, photos){
         if (err) { throw new Error(err)}
-    
         if (photos[0] === undefined || !photos) { res.status(500).send() }
         else { 
             calculateRanking(photos, function(photos){
@@ -204,7 +208,24 @@ function transformPhotoForMap(photos, fn){
 
 }
 
-exports.getGeoJson = function(req, res){
-    res.json(geojson);
-}
+exports.getWorldJson = function(req, res){
+    res.json(world);
+};
+
+function checkPointInPolygon(location, coordinates, fn){
+    if (gju.pointInPolygon({"type":"Point","coordinates":location}, {"type":"Polygon", "coordinates": coordinates}))
+        { return fn(null, true) }
+};
+
+function determineWhatCountryPointIsIn(o, fn){
+ world.features.forEach(function(country){
+                var coordinates =  country.geometry.coordinates;
+                checkPointInPolygon([o.location[1], o.location[0]], coordinates, function(err, result){
+                    if (result) {
+                        o.country = country.id;
+                        return fn(null, o);
+                    }
+                })   
+            });
+        }
                

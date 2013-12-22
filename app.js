@@ -34,15 +34,15 @@ app.get('/', function(req, res){
   res.sendfile(__dirname + '/public/views/index.html')
 });
 
-app.post('/requestTwoPhotos', routes.requestTwoPhotos);
+app.post('/getTwoPhotos', routes.getTwoPhotos);
 
-app.post('/requestOnePhoto', routes.requestOnePhoto);
+app.post('/getOnePhoto', routes.getOnePhoto);
 
 app.post('/voteOnPhoto', routes.voteOnPhoto);
 
 app.post('/getPhotosForMap', routes.getPhotosForMap);
 
-app.get('/geojson', routes.getGeoJson)
+app.get('/worldjson', routes.getWorldJson)
 
 app.get('*', function(req, res){
   res.send('404, page not found', 404);

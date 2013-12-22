@@ -28,19 +28,20 @@ appModule.config(['$routeProvider', function($routeProvider){
 
 appModule.factory('photoGetter', ['$http', function ($http) {
     return photoGetter = {
-        requestTwoPhotos: function(tag){
-            return $http.post('/requestTwoPhotos', { tag: tag});
+        getTwoPhotos: function(tag){
+            return $http.post('/getTwoPhotos', { tag: tag});
         },
         getOnePhoto: function(tag, photo){
-            return $http.post('/requestOnePhoto', { tag: tag, photo: photo});
+            return $http.post('/getOnePhoto', { tag: tag, photo: photo});
         },
         getPhotosForMap: function(tag){
             return $http.post('/getPhotosForMap', {tag: tag})
+        },
+        getPhotosForCountry: function(country){
+            return $http.post('/getPhotosForCountry', { country: country})
         }
     }
 }]);
-
-
 
 appModule
     .controller('homeController', ['$scope', '$location', 
@@ -70,7 +71,7 @@ appModule
             $scope.tag = $routeParams.tag;
             $scope.photos = false;
 
-            photoGetter.requestTwoPhotos($routeParams.tag)
+            photoGetter.getTwoPhotos($routeParams.tag)
                .then(function(response){
                     $scope.photos = response.data;
                  }, 
@@ -88,7 +89,7 @@ appModule
                 else {
                     $scope.error = false;
                     $scope.photos = false;
-                    photoGetter.requestTwoPhotos($routeParams.tag)
+                    photoGetter.getTwoPhotos($routeParams.tag)
                        .then(function(response){
                             $scope.photos = response.data;
                          }, 
@@ -108,7 +109,7 @@ appModule
                 })
 
                 var tag = $scope.tag || $routeParams.tag
-                photoGetter.requestTwoPhotos(tag, photo)
+                photoGetter.getOnePhoto(tag, photo)
                     .then(function(response){
                         $scope.photos.push(response.data[0]);
                     },
@@ -189,14 +190,20 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
     }
 
     //$scope.getGeoJson = function(){
-        $http.get('/geojson')
+        $http.get('/worldjson')
             .success(function(data){
                 $scope.geojson = data;
-            })
+            });
        // }
+
+    $scope.$on('country.click', function(e, l){
+        var country = l.target.feature.id;
+        console.log(country);
+        //photoGetter.getPhotosForCountry()
+    });
 }]);
 
-appModule.directive('map', function() {
+appModule.directive('map', function($rootScope) {
     return {
         replace: true,
         template: '<div></div>',
@@ -231,8 +238,10 @@ appModule.directive('map', function() {
                 },
                 onEachFeature: function (feature, layer) {
                      layer.on('click', function(e){
-                        var lay = e.target;
-                        console.log(lay.feature.id);
+                        $rootScope.$broadcast('country.click', e);
+
+                        //var lay = e.target;
+                        //console.log(lay.feature.id);
                     })
             }}).addTo(map)
             }
