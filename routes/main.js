@@ -150,7 +150,9 @@ function isEmpty(obj) {
 
 exports.voteOnPhoto = function(req, res){
     Photo.findOne({id: req.body.photo.id}, function(err, photo){
-        if (!err){
+   
+        if (err) { throw new Error(err)}
+        else {
         var votes = photo.votes + 1;
         photo.update({isVoted: true}, function(){
             photo.update({votes: votes}, function(){
@@ -158,7 +160,6 @@ exports.voteOnPhoto = function(req, res){
             });
         });
         }
-        else { throw new Error(err)}
     })  
 }
 
