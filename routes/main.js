@@ -28,7 +28,7 @@ function getOnePhoto(req, res) {
        .update({notTag: true})
        .exec(function(){
             getPhotosFromFlickr(tag, 1, function(error, photo){
-                    checkIfPhotoExists(tag, photo, function(photo){
+                    checkIfPhotoIsInDB(tag, photo, function(photo){
                         res.json(photo);
                     })
                 })
@@ -40,33 +40,42 @@ function getPhotos(req, res) {
     var tag = req.body.tag.toLowerCase();
     saveQuery(tag, function(){
         getPhotosFromFlickr(tag, 2, function(error, photos) {
-            checkIfPhotoExists(tag, photos, function(photos){
+            checkIfPhotoIsInDB(tag, photos, function(photos){
                 res.json(photos);
             })
         })
     })
 }
 
-function checkIfPhotoExists(tag, photos, fn){
-
+function checkIfPhotoIsInDB(tag, photos, fn){
     if (photos.length > 2){ photos.pop();}
-    photos.forEach(function(p){
+    // provided with an array of photo objects
+    photos.forEach(function(p, i){
+            console.log("Iteration " + i)
+            // checks if each photo is in database
             Photo.findOne({id: p.id, tag: tag}, function(err, photo){
-                if (err || !photo){ 
-
-                    determineWhatCountryPointIsIn(p, function(err, p){
-                        if (p){ saveNewPhoto(p); }
-                        })
+                // if no photo, checks what country photo is in, then saves photo
+                if (err || !photo)
+                    { 
+                    determineWhatCountryPointIsIn(p, function(p){
+                        console.log("determineWhatCountryfunc returned with " + p.country);
+                        saveNewPhoto(p, function(err, photo){
+                        console.log("Photo saved with ID " + photo.id + " " + photo.country);
+                        }); 
+                    });
+                }
+                else { 
+                    // if photo already in database appearance count of photo incremented
+                    console.log("Photo in DB - photo to be updated")
+                    appearances = photo.appearances + 1;
+                    // callback necessary to trigger update as per mongoose docs
+                    photo.update({appearances:appearances}, function(){ 
+                    console.log("Photo already in DB and appearances updated")})
                     }
-                    else { 
-                        appearances = photo.appearances + 1;
-                        // callback necessary to trigger update as per mongoose docs
-                        photo.update({appearances:appearances}, function(){})
-                    }
-                })
-            })
-    return fn(photos);
-}
+                });
+            });
+        return fn(photos);
+    }
 
 function searchFlickr(object, func) {
     flickr.photos.search(object, function (error, results) {
@@ -117,8 +126,7 @@ function flickrSearchOptions(tag, arr) {
     this.radius = 5;
 }
 
-function saveNewPhoto(o){
-
+function saveNewPhoto(o, fn){
     new Photo({
         location: o.location,
         country: o.country,
@@ -131,7 +139,7 @@ function saveNewPhoto(o){
         votes: 0,
         appearances: 1,
         notTag: false
-    }).save();
+    }).save(fn);
 }
 
 function saveQuery(tag, fn){
@@ -149,9 +157,9 @@ function isEmpty(obj) {
 }
 
 exports.voteOnPhoto = function(req, res){
+    console.log("Photo to be voted on with ID = " + req.body.photo.id);
     Photo.findOne({id: req.body.photo.id}, function(err, photo){
-   
-        if (err) { throw new Error(err)}
+        if (err || !photo) { console.log("Error returning photo to be voted on " + err)}
         else {
         var votes = photo.votes + 1;
         photo.update({isVoted: true}, function(){
@@ -159,8 +167,8 @@ exports.voteOnPhoto = function(req, res){
                 getPhotos(req, res);
             });
         });
-        }
-    })  
+    }
+    });  
 }
 
 exports.getPhotosForMap = function(req, res){
@@ -213,20 +221,57 @@ exports.getWorldJson = function(req, res){
     res.json(world);
 };
 
-function checkPointInPolygon(location, coordinates, fn){
-    if (gju.pointInPolygon({"type":"Point","coordinates":location}, {"type":"Polygon", "coordinates": coordinates}))
-        { return fn(null, true) }
+exports.getPhotosForCountry = function(req, res){
+    console.log(req.body.country);
+    Photo.find({ country: req.body.country, tag: req.body.tag, isVoted: true}, function(err, photos){
+        if (!err) { res.json(photos) };
+    });
 };
 
-function determineWhatCountryPointIsIn(o, fn){
- world.features.forEach(function(country){
-                var coordinates =  country.geometry.coordinates;
-                checkPointInPolygon([o.location[1], o.location[0]], coordinates, function(err, result){
-                    if (result) {
-                        o.country = country.id;
-                        return fn(null, o);
-                    }
-                })   
-            });
+function checkPointInPolygon(location, coordinates, cb){
+    // returns true if point is in polygon, with result then wrapped in function for callback
+    if (gju.pointInPolygon({"type":"Point","coordinates":location}, {"type":"Polygon", "coordinates": coordinates}))
+        { return cb(null, true); }
+        else { err = new Error("No polygon found")
+        return cb(err)}
+};
+
+function checkPointInMultiPolygon(location, arrayofmulticoordinates, cb){
+    arrayofmulticoordinates.forEach(function(coordinates){
+        if (gju.pointInPolygon({"type":"Point","coordinates":location}, {"type":"Polygon", "coordinates": coordinates}))
+        { return cb(null, true); }
+        else { 
+            err = new Error("No polygon found")
+            return cb(err)
         }
+    })
+}
+
+function determineWhatCountryPointIsIn(o, cb){
+    console.log(world.features.length);
+    // loops through each country then uses checkPointInPolygon fn (including using cb) to check if point is in particular country
+    
+    world.features.forEach(function(country){
+        if (country.geometry.type === "MultiPolygon"){
+            var multicoordinates =  country.geometry.coordinates;
+            checkPointInMultiPolygon(location, multicoordinates, function(err, result){
+                if (result) {
+                    o.country = country.id;
+                    return cb(o);
+                }
+            })
+        } 
+        else {
+            var coordinates = country.geometry.coordinates;
+            checkPointInPolygon(location, coordinates, function(err, result){
+                if (result) {
+                    console.log("Point in country " + country.id)
+                    o.country = country.id;
+                    return cb(o);
+                }
+            })
+        }   
+    });
+}
+
                

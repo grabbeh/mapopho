@@ -37,8 +37,8 @@ appModule.factory('photoGetter', ['$http', function ($http) {
         getPhotosForMap: function(tag){
             return $http.post('/getPhotosForMap', {tag: tag})
         },
-        getPhotosForCountry: function(country){
-            return $http.post('/getPhotosForCountry', { country: country})
+        getPhotosForCountry: function(country, tag){
+            return $http.post('/getPhotosForCountry', { country: country, tag: tag})
         }
     }
 }]);
@@ -199,7 +199,12 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
     $scope.$on('country.click', function(e, l){
         var country = l.target.feature.id;
         console.log(country);
-        //photoGetter.getPhotosForCountry()
+        $scope.photos = false;
+        photoGetter.getPhotosForCountry(country, $routeParams.tag)
+        .then(function(response){
+            console.log(response);
+            $scope.photos = response.data;
+        })
     });
 }]);
 

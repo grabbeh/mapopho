@@ -99,6 +99,11 @@ input {
 
 .map-image {
     margin: 20px 0 10px 0;
+    width: 100%;
+}
+
+.full-img-width {
+    width: 100%;
 }
 
 .place-holder {
@@ -270,8 +275,8 @@ margin: 0px 10px 10px 0px;
 
 img {
     border: none;
-    width: 100%;
 }
+
 .flickr-link {
     background-image: url('../images/flickr.png');
     background-repeat:no-repeat;
@@ -286,7 +291,9 @@ img {
 
 .image-holder {
     position: relative;
+    width: 100%;
 }
+
 
 .flickr-link:hover {
     cursor: pointer;
@@ -338,6 +345,22 @@ img {
     margin: 10px 0 20px 0;
     background: #47C2AB;
     color: white;
+}
+
+/* MAP */
+
+.map-image-holder {
+}
+
+.map-photo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.map-photo-list li {
+    margin: 10px 25px 15px 0;
+    float: left;
 }
 
 /* MOBILE RESPONSIVE CHANGE */
