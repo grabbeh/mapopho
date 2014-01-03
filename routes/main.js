@@ -254,7 +254,7 @@ function determineWhatCountryPointIsIn(o, cb){
     world.features.forEach(function(country){
         if (country.geometry.type === "MultiPolygon"){
             var multicoordinates =  country.geometry.coordinates;
-            checkPointInMultiPolygon(location, multicoordinates, function(err, result){
+            checkPointInMultiPolygon([o.location[1], o.location[0]], multicoordinates, function(err, result){
                 if (result) {
                     o.country = country.id;
                     return cb(o);
@@ -263,7 +263,7 @@ function determineWhatCountryPointIsIn(o, cb){
         } 
         else {
             var coordinates = country.geometry.coordinates;
-            checkPointInPolygon(location, coordinates, function(err, result){
+            checkPointInPolygon([o.location[1], o.location[0]], coordinates, function(err, result){
                 if (result) {
                     console.log("Point in country " + country.id)
                     o.country = country.id;
