@@ -376,12 +376,19 @@ exports.testThree = function(req, res){
 
 exports.testFour = function(req, res){
     Photo.find({ country:'RUS', tag: 'cat', isVoted: true}, function(err, data){
-        calculatePhotoRanking(data, function(data){
-            calculateCountryRankings(data, function(data){
-                res.json(data)
-            })     
-        })
-    });
+        convertToObjects(data, function(data){
+            calculatePhotoRanking(data, function(data){
+                calculateCountryRankings(data, function(data){
+                    res.json(data)
+                })     
+            })
+        });
+    })
 };
 
 
+function convertToObjects(photos, cb){
+    return cb(_.map(photos, function(photo){
+        return photo.toObject();         
+    }))
+}
