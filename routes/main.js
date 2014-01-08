@@ -309,7 +309,7 @@ function averager(key) {
 var countrySorter = createArraySorter('country');
 
 exports.countryRankings = function(req, res){
-    Photo.find({ tag: 'cat'}).lean().exec(function(err, photos){
+    Photo.find({ tag: req.params.tag}).lean().exec(function(err, photos){
         calculatePhotoRanking(photos, function(photos){
             res.json(_.map(_.map(countrySorter(photos), averager('ranking')), function(i){
                 var o = {};

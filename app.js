@@ -46,7 +46,7 @@ app.get('/worldjson', routes.getWorldJson);
 
 app.post('/getPhotosForCountry', routes.getPhotosForCountry);
 
-app.get('/countryRankings', routes.countryRankings);
+app.get('/countryrankings/for/:tag', routes.countryRankings);
 
 app.get('*', function(req, res){
   res.send('404, page not found', 404);
