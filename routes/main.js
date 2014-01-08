@@ -309,16 +309,14 @@ function averager(key) {
 var countrySorter = createArraySorter('country');
 
 exports.countryRankings = function(req, res){
-    Photo.find({ tag: 'cat', isVoted: true}).lean().exec(function(err, photos){
+    Photo.find({ tag: 'cat'}).lean().exec(function(err, photos){
         calculatePhotoRanking(photos, function(photos){
-            var arr = _.map(countrySorter(photos), averager('ranking'))
-            var narr = _.map(arr, function(i){
+            res.json(_.map(_.map(countrySorter(photos), averager('ranking')), function(i){
                 var o = {};
                 o.country = i[0].country;
                 o.countryAverage = i[0].countryAverage;
                 return o;
-            })
-            res.json(narr.sort(HighToLow));
+            }).sort(HighToLow)) 
         })
     })
 }
