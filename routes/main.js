@@ -172,6 +172,7 @@ exports.getPhotosForMap = function(req, res){
         if (err) { throw new Error(err)}
         if (photos[0] === undefined || !photos) { res.status(500).send() }
         else { 
+            convertToObjects(photos, function(photos){
             calculatePhotoRanking(photos, function(photos){
                 calculateCountryRankings(photos, function(photos){
                          transformPhotoForMap(photos, function(photos){
@@ -179,6 +180,8 @@ exports.getPhotosForMap = function(req, res){
                     });
                 })
             })
+        })
+
         };
     })
 }
@@ -223,12 +226,14 @@ exports.getWorldJson = function(req, res){
 
 exports.getPhotosForCountry = function(req, res){
     Photo.find({ country: req.body.country, tag: req.body.tag, isVoted: true}, function(err, photos){
-        calculatePhotoRanking(photos, function(photos){
-            calculateCountryRankings(photos, function(photos){
-                res.json(photos)
-            })     
-        })
-    });
+        convertToObjects(photos, function(photos){
+            calculatePhotoRanking(photos, function(photos){
+                calculateCountryRankings(photos, function(photos){
+                    res.json(photos)
+                })     
+            })
+        });
+    })
 };
 
 function checkPointInPolygon(location, coordinates, cb){
