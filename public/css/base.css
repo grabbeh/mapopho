@@ -350,6 +350,7 @@ img {
 /* MAP */
 
 .map-image-holder {
+    width: 250px;
 }
 
 .map-photo-list {

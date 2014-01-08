@@ -168,11 +168,10 @@ exports.voteOnPhoto = function(req, res){
 }
 
 exports.getPhotosForMap = function(req, res){
-    Photo.find({tag: req.body.tag.toLowerCase(), isVoted: true}, function(err, photos){
+    Photo.find({tag: req.body.tag.toLowerCase(), isVoted: true}).lean().exec(function(err, photos){
         if (err) { throw new Error(err)}
         if (photos[0] === undefined || !photos) { res.status(500).send() }
         else { 
-            convertToObjects(photos, function(photos){
             calculatePhotoRanking(photos, function(photos){
                 calculateCountryRankings(photos, function(photos){
                          transformPhotoForMap(photos, function(photos){
@@ -180,8 +179,6 @@ exports.getPhotosForMap = function(req, res){
                     });
                 })
             })
-        })
-
         };
     })
 }
@@ -194,8 +191,6 @@ function calculatePhotoRanking(photos, fn){
 }
 
 function transformPhotoForMap(photos, fn){
-    console.log("Transform photos for map fn " + photos[0].countryAverage + " " + photos[0].ranking)
-
     locations = {};
     $ = cheerio.load('<div style="width: 300px"><a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="rating" style="background: #222222; padding: 10px; color: white; position: absolute; z-index: 100; top: 14px; right: 21px; font-weight: bold; font-size: 20px;"></div></div>');
     photos.forEach(function(photo){
@@ -217,7 +212,6 @@ function transformPhotoForMap(photos, fn){
         locations[photo.id] = location;
     })
     return fn(locations);
-
 }
 
 exports.getWorldJson = function(req, res){
@@ -225,14 +219,12 @@ exports.getWorldJson = function(req, res){
 };
 
 exports.getPhotosForCountry = function(req, res){
-    Photo.find({ country: req.body.country, tag: req.body.tag, isVoted: true}, function(err, photos){
-        convertToObjects(photos, function(photos){
-            calculatePhotoRanking(photos, function(photos){
-                calculateCountryRankings(photos, function(photos){
-                    res.json(photos)
-                })     
-            })
-        });
+    Photo.find({ country: req.body.country, tag: req.body.tag, isVoted: true}).lean().exec(function(err, photos){
+        calculatePhotoRanking(photos, function(photos){
+            calculateCountryRankings(photos, function(photos){
+                res.json(photos)
+            })     
+        })
     })
 };
 
@@ -305,9 +297,10 @@ function equalToGiven(key, value) {
 function averager(key) {
     return function (arr) {
         _.each(arr, function (e) {
-            e.countryAverage = _.reduce(_.pluck(arr, key), function (a, b) {
+            average = _.reduce(_.pluck(arr, key), function (a, b) {
                 return a + b / arr.length;
             }, 0);
+            e.countryAverage = average.toFixed(0)
         });
         return arr;
     };
@@ -315,85 +308,21 @@ function averager(key) {
 
 var countrySorter = createArraySorter('country');
 
-function returnData(cb){
-    var data = [{
-    __v: 0,
-    _id: "5285cbd164ac14f121000012",
-    appearances: 1,
-    country: "RUS",
-    farm: 5,
-    id: "4297172189",
-    isVoted: true,
-    notTag: false,
-    secret: "925e90a4d9",
-    server: "4058",
-    tag: "cat",
-    votes: 1,
-    dateCreated: "2013-11-15T07:22:57.215Z",
-    location: [
-      53.1666667,
-      48.4666667
-    ]
-  },
-  {
-    __v: 0,
-    _id: "5285cd7364ac14f12100006a",
-    appearances: 5,
-    country: "RUS",
-    farm: 3,
-    id: "5732677537",
-    isVoted: true,
-    notTag: false,
-    secret: "762e059973",
-    server: "2714",
-    tag: "cat",
-    votes: 2,
-    dateCreated: "2013-11-15T07:29:55.762Z",
-    location: [
-      56.1333333,
-      47.2333333
-    ]
-  }]
-    return cb(null, data);
-}
-
-exports.test = function(req, res){
-    returnData(function(err, data){
-        res.json(data)
-    })
-}
-
-exports.testTwo = function(req, res){
-    returnData(function(err, data){
-         calculatePhotoRanking(data, function(data){
-                calculateCountryRankings(data, function(data){
-                    res.json(data)
-                })     
+exports.countryRankings = function(req, res){
+    Photo.find({ tag: 'cat', isVoted: true}).lean().exec(function(err, photos){
+        calculatePhotoRanking(photos, function(photos){
+            var arr = _.map(countrySorter(photos), averager('ranking'))
+            var narr = _.map(arr, function(i){
+                var o = {};
+                o.country = i[0].country;
+                o.countryAverage = i[0].countryAverage;
+                return o;
             })
+            res.json(narr.sort(HighToLow));
         })
-    }
-
-exports.testThree = function(req, res){
-    Photo.find({ country:'RUS', tag: 'cat', isVoted: true}, function(err, data){
-        res.json(data)
     })
 }
 
-exports.testFour = function(req, res){
-    Photo.find({ country:'RUS', tag: 'cat', isVoted: true}, function(err, data){
-        convertToObjects(data, function(data){
-            calculatePhotoRanking(data, function(data){
-                calculateCountryRankings(data, function(data){
-                    res.json(data)
-                })     
-            })
-        });
-    })
-};
-
-
-function convertToObjects(photos, cb){
-    return cb(_.map(photos, function(photo){
-        return photo.toObject();         
-    }))
+function HighToLow(a, b) {
+    return b.countryAverage - a.countryAverage;
 }
