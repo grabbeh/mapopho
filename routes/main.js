@@ -1,5 +1,4 @@
 var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
-    sys = require('sys'),
     api = require('../config/api.js'),
     cheerio = require('cheerio'),
     flickr = new FlickrAPI(api.details.key),
@@ -7,6 +6,7 @@ var FlickrAPI = require('../flickrnode/lib/flickr').FlickrAPI,
     Query = require('../models/query.js'),
     gju = require('geojson-utils'),
     cities = require('../config/basiccities.json'),
+    _ = require('underscore')
     world = require('../geojson/world.json');
 
 exports.home = function (req, res) {
@@ -51,26 +51,24 @@ function checkIfPhotoIsInDB(tag, photos, fn){
     if (photos.length > 2){ photos.pop();}
     // provided with an array of photo objects
     photos.forEach(function(p, i){
-            console.log("Iteration " + i)
+            
             // checks if each photo is in database
             Photo.findOne({id: p.id, tag: tag}, function(err, photo){
                 // if no photo, checks what country photo is in, then saves photo
                 if (err || !photo)
                     { 
                     determineWhatCountryPointIsIn(p, function(p){
-                        console.log("determineWhatCountryfunc returned with " + p.country);
                         saveNewPhoto(p, function(err, photo){
-                        console.log("Photo saved with ID " + photo.id + " " + photo.country);
                         }); 
                     });
                 }
                 else { 
                     // if photo already in database appearance count of photo incremented
-                    console.log("Photo in DB - photo to be updated")
+                    
                     appearances = photo.appearances + 1;
                     // callback necessary to trigger update as per mongoose docs
                     photo.update({appearances:appearances}, function(){ 
-                    console.log("Photo already in DB and appearances updated")})
+                    })
                     }
                 });
             });
@@ -157,10 +155,8 @@ function isEmpty(obj) {
 }
 
 exports.voteOnPhoto = function(req, res){
-    console.log("Photo to be voted on with ID = " + req.body.photo.id);
     Photo.findOne({id: req.body.photo.id}, function(err, photo){
-        if (err || !photo) { console.log("Error returning photo to be voted on " + err)}
-        else {
+        if (!err) {
         var votes = photo.votes + 1;
         photo.update({isVoted: true}, function(){
             photo.update({votes: votes}, function(){
@@ -176,28 +172,30 @@ exports.getPhotosForMap = function(req, res){
         if (err) { throw new Error(err)}
         if (photos[0] === undefined || !photos) { res.status(500).send() }
         else { 
-            calculateRanking(photos, function(photos){
-                transformPhotoForMap(photos, function(photos){
-                    res.json(photos);
-                });
+            calculatePhotoRanking(photos, function(photos){
+                calculateCountryRankings(photos, function(photos){
+                         transformPhotoForMap(photos, function(photos){
+                            res.json(photos);
+                    });
+                })
             })
         };
     })
 }
 
-function calculateRanking(photos, fn){
-    photos.forEach(function(item){
-        var ranking = (item.votes /  item.appearances) * 100;
-        item.ranking = ranking.toFixed(0);
-    })
-    return fn(photos);
+function calculatePhotoRanking(photos, fn){
+    return fn(_.map(photos, function(photo){
+        photo.ranking = ((photo.votes /  photo.appearances) * 100).toFixed(0);
+        return photo;
+    }));
 }
 
 function transformPhotoForMap(photos, fn){
+    console.log("Transform photos for map fn " + photos[0].countryAverage + " " + photos[0].ranking)
+
     locations = {};
     $ = cheerio.load('<div style="width: 300px"><a target="_blank"><img style="padding: 0; margin: 0; width: 300px;"/></a><div class="rating" style="background: #222222; padding: 10px; color: white; position: absolute; z-index: 100; top: 14px; right: 21px; font-weight: bold; font-size: 20px;"></div></div>');
     photos.forEach(function(photo){
-
         var image = "http://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg";
         var flickr = "http://flickr.com/photo.gne?id=" + photo.id + "/";
 
@@ -211,6 +209,8 @@ function transformPhotoForMap(photos, fn){
         location["lng"] = photo.location[1];
         location["message"] = html;
         location["ranking"] = photo.ranking;
+        location["country"] = photo.country;
+        location["countryAverage"] = photo.countryAverage;
         locations[photo.id] = location;
     })
     return fn(locations);
@@ -222,9 +222,12 @@ exports.getWorldJson = function(req, res){
 };
 
 exports.getPhotosForCountry = function(req, res){
-    console.log(req.body.country);
     Photo.find({ country: req.body.country, tag: req.body.tag, isVoted: true}, function(err, photos){
-        if (!err) { res.json(photos) };
+        calculatePhotoRanking(photos, function(photos){
+            calculateCountryRankings(photos, function(photos){
+                res.json(photos)
+            })     
+        })
     });
 };
 
@@ -248,12 +251,11 @@ function checkPointInMultiPolygon(location, arrayofmulticoordinates, cb){
 }
 
 function determineWhatCountryPointIsIn(o, cb){
-    console.log(world.features.length);
     // loops through each country then uses checkPointInPolygon fn (including using cb) to check if point is in particular country
     
     world.features.forEach(function(country){
         if (country.geometry.type === "MultiPolygon"){
-            var multicoordinates =  country.geometry.coordinates;
+            var multicoordinates = country.geometry.coordinates;
             checkPointInMultiPolygon([o.location[1], o.location[0]], multicoordinates, function(err, result){
                 if (result) {
                     o.country = country.id;
@@ -265,7 +267,6 @@ function determineWhatCountryPointIsIn(o, cb){
             var coordinates = country.geometry.coordinates;
             checkPointInPolygon([o.location[1], o.location[0]], coordinates, function(err, result){
                 if (result) {
-                    console.log("Point in country " + country.id)
                     o.country = country.id;
                     return cb(o);
                 }
@@ -274,4 +275,113 @@ function determineWhatCountryPointIsIn(o, cb){
     });
 }
 
-               
+function calculateCountryRankings(photos, cb){
+    return cb(_.flatten(_.map(countrySorter(photos), averager('ranking'))));
+}
+
+function createArraySorter(key) {
+    return function (arr) {
+        var holder = [];
+        _.each(_.uniq(_.pluck(arr, key)), function (e) {
+            holder.push(_.where(arr, equalToGiven(key, e)));
+        });
+        return holder;
+    };
+}
+
+function equalToGiven(key, value) {
+    var obj = {};
+    obj[key] = value;
+    return obj;
+}
+
+// return function which adds 'average' property to each object in array, creating average via reduce on value from given key
+
+function averager(key) {
+    return function (arr) {
+        _.each(arr, function (e) {
+            e.countryAverage = _.reduce(_.pluck(arr, key), function (a, b) {
+                return a + b / arr.length;
+            }, 0);
+        });
+        return arr;
+    };
+}
+
+var countrySorter = createArraySorter('country');
+
+function returnData(cb){
+    var data = [{
+    __v: 0,
+    _id: "5285cbd164ac14f121000012",
+    appearances: 1,
+    country: "RUS",
+    farm: 5,
+    id: "4297172189",
+    isVoted: true,
+    notTag: false,
+    secret: "925e90a4d9",
+    server: "4058",
+    tag: "cat",
+    votes: 1,
+    dateCreated: "2013-11-15T07:22:57.215Z",
+    location: [
+      53.1666667,
+      48.4666667
+    ]
+  },
+  {
+    __v: 0,
+    _id: "5285cd7364ac14f12100006a",
+    appearances: 5,
+    country: "RUS",
+    farm: 3,
+    id: "5732677537",
+    isVoted: true,
+    notTag: false,
+    secret: "762e059973",
+    server: "2714",
+    tag: "cat",
+    votes: 2,
+    dateCreated: "2013-11-15T07:29:55.762Z",
+    location: [
+      56.1333333,
+      47.2333333
+    ]
+  }]
+    return cb(null, data);
+}
+
+exports.test = function(req, res){
+    returnData(function(err, data){
+        res.json(data)
+    })
+}
+
+exports.testTwo = function(req, res){
+    returnData(function(err, data){
+         calculatePhotoRanking(data, function(data){
+                calculateCountryRankings(data, function(data){
+                    res.json(data)
+                })     
+            })
+        })
+    }
+
+exports.testThree = function(req, res){
+    Photo.find({ country:'RUS', tag: 'cat', isVoted: true}, function(err, data){
+        res.json(data)
+    })
+}
+
+exports.testFour = function(req, res){
+    Photo.find({ country:'RUS', tag: 'cat', isVoted: true}, function(err, data){
+        calculatePhotoRanking(data, function(data){
+            calculateCountryRankings(data, function(data){
+                res.json(data)
+            })     
+        })
+    });
+};
+
+

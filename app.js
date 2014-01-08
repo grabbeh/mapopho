@@ -46,6 +46,14 @@ app.get('/worldjson', routes.getWorldJson);
 
 app.post('/getPhotosForCountry', routes.getPhotosForCountry);
 
+app.get('/dummydata', routes.test);
+
+app.get('/transformeddummydata', routes.testTwo);
+
+app.get('/dbdata', routes.testThree);
+
+app.get('/transformeddbdata', routes.testFour);
+
 app.get('*', function(req, res){
   res.send('404, page not found', 404);
 });

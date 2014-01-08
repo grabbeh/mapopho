@@ -21,6 +21,8 @@
       <div class="loading-message" ng-hide="markers || error">Loading...</div>
       <div class="error-message" ng-show="error">Either no pictures for this tag or server error</div>
    <div map id="map" markers="markers" geojson="geojson"></div>
+   <p> {{ country }}        </p>
+   <p> {{ countryAverage }} </p>
    <p><ul class="map-photo-list" ng-show="photos">
       <li ng-repeat="photo in photos">
         <div class="map-image-holder">

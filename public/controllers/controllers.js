@@ -147,6 +147,7 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
       var tag = $routeParams.tag;
       photoGetter.getPhotosForMap(tag)
         .then(function(response){
+            console.log(response.data)
             $scope.markers = $scope.originalMarkers = response.data;
             },
             function(){ $scope.error = true;})
@@ -189,21 +190,21 @@ appModule.controller("mapController", ['$scope', '$location', 'photoGetter', '$r
         return $scope.filterMarkersForm.$dirty && $scope.filterMarkersForm.$valid;
     }
 
-    //$scope.getGeoJson = function(){
-        $http.get('/worldjson')
-            .success(function(data){
-                $scope.geojson = data;
-            });
-       // }
+    $http.get('/worldjson')
+        .success(function(data){
+            $scope.geojson = data;
+        });
+
 
     $scope.$on('country.click', function(e, l){
         var country = l.target.feature.id;
-        console.log(country);
         $scope.photos = false;
         photoGetter.getPhotosForCountry(country, $routeParams.tag)
         .then(function(response){
-            console.log(response);
+            console.log(response.data);
             $scope.photos = response.data;
+            $scope.country = response.data[0].country;
+            $scope.countryAverage = response.data[0].countryAverage;
         })
     });
 }]);
