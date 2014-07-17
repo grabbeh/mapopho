@@ -1,4 +1,4 @@
-var http = require("http");
+var http = require("https");
 
 var Request= function Request(api_key) {
     this._configure(api_key);
@@ -30,7 +30,7 @@ Request.prototype.executeRequest= function(method, arguments, sign_it, result_ma
 
     var reqOptions = {
     method: 'GET',
-    port: 80,
+    port: 443,
     hostname:"api.flickr.com",
     path: this.baseUrl + argumentString
     }
